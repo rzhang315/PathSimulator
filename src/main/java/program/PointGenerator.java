@@ -1,3 +1,5 @@
+package program;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Set;
@@ -5,6 +7,8 @@ import java.util.HashSet;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
+import model.Path;
+import model.Point;
 
 /**
  * Class that generates random unique points that are not 0,0

@@ -1,3 +1,7 @@
+package algorithm;
+
+import model.Path;
+import model.Point;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -5,37 +9,25 @@ import java.util.TreeMap;
 import java.util.Comparator;
 
 /**
- * Sort a list of points for maximum efficiency
+ * Permutation algorithm (brute force)
  * @author Kairi Kozuma
  * @version 1.0
  */
-public class PointSorter {
-
-    // Boundaries for points
-    private static final int X_MAX = 4;
-    private static final int X_MIN = -4;
-    private static final int Y_MAX = 5;
-    private static final int Y_MIN = -5;
-
-    private static double minLength = 0.0;
-
-    // Check if points are within bounds
-    private static boolean withinBounds(int x, int y) {
-        return (x >= X_MIN && x <= X_MAX) && (y >= Y_MIN && y <= Y_MAX);
-    }
+public class PermutationAlgorithm implements SortAlgorithm {
 
     // List of points to sort
     private List<Point> mPoints;
 
     // Private list of paths
-    private List<Path> mPathList = new ArrayList<Path>();
+    private List<Path> mPathList;
 
     // Constructor
-    public PointSorter(List<Point> listPoints) {
+    public PermutationAlgorithm(List<Point> listPoints) {
         mPoints = listPoints;
-        minLength = (new Path(mPoints)).length();
+        mPathList = new ArrayList<Path>();
     }
 
+    @Override
     public Path best() {
         permutate();
         mPathList.sort(Comparator.comparing(Path::length));

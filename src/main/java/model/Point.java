@@ -1,3 +1,5 @@
+package model;
+
 /**
  * Class that represents a single point in Cartesian coordinates
  * @author Kairi Kozuma

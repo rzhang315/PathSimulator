@@ -1,3 +1,9 @@
+package program;
+
+import model.Path;
+import model.Point;
+import algorithm.SortAlgorithm;
+import algorithm.PermutationAlgorithm;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.chart.NumberAxis;
@@ -45,13 +51,14 @@ import javafx.stage.Stage;
  */
 public class PathSimulator extends Application {
 
-    private String fileName;
-
     private static final int X_MAX = 5;
     private static final int X_MIN = -5;
     private static final int Y_MAX = 6;
     private static final int Y_MIN = -6;
     private static final int RESOLUTION = 1;
+
+    private List<Point> mPointList;
+    private SortAlgorithm mSortAlgorithm;
 
     private TableView<Point> table = new TableView<Point>();
     private final ObservableList<Point> data =
@@ -93,10 +100,9 @@ public class PathSimulator extends Application {
         final Button generatePoints = new Button("Generate Points");
         generatePoints.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
-                // TODO: Update graphics to chart points scatterplot
-                List<Point> mPointList = PointGenerator
+                mPointList = PointGenerator
                     .generate(8, X_MIN + 1, X_MAX - 1, Y_MIN + 1, Y_MAX - 1);
-                PointGenerator.writeToFile(mPointList, "pointsRandom.txt");
+                // PointGenerator.writeToFile(mPointList, "pointsRandom.txt");
                 data.clear();
                 data.addAll(mPointList);
 
@@ -118,9 +124,8 @@ public class PathSimulator extends Application {
         calculatePath.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
 
-                List<Point> mBestPointList = (new PointSorter(
-                    PathParser.parsePathFromFile("pointsRandom.txt")
-                    .getPoints())).best().getPoints();
+                List<Point> mBestPointList =
+                    new PermutationAlgorithm(mPointList).best().getPoints();
 
                 data.clear();
                 data.addAll(mBestPointList);
