@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
+import java.util.Comparator;
 import model.Path;
 import model.Point;
 
@@ -54,7 +55,11 @@ public class PointGenerator {
             mPoints.add(new Point(x, y, mPoints.size() + 1));
         }
 
-        return new ArrayList<Point>(mPoints);
+        List<Point> mPointList = new ArrayList<Point>(mPoints);
+
+        // Sort by index
+        mPointList.sort(Comparator.comparing(Point::getIndex));
+        return mPointList;
     }
 
     public static void writeToFile(List<Point> pointList, String fileName) {

@@ -76,7 +76,6 @@ public class PathSimulator extends Application {
     @Override
     public void start(Stage stage) {
 
-        stage.setTitle("Path");
         final NumberAxis xAxis = new NumberAxis(X_MIN, X_MAX, RESOLUTION);
         final NumberAxis yAxis = new NumberAxis(Y_MIN, Y_MAX, RESOLUTION);
         final LineChart<Number,Number> lineChart = new
@@ -86,6 +85,7 @@ public class PathSimulator extends Application {
         xAxis.setLabel("Feet");
         yAxis.setLabel("Feet");
         lineChart.setTitle("Points");
+        lineChart.setLegendVisible(false);
 
         XYChart.Series pointSeries = new XYChart.Series();
         pointSeries.setName("Points Plotted");
@@ -93,9 +93,11 @@ public class PathSimulator extends Application {
         // Connect points in order that they were added
         lineChart.setAxisSortingPolicy(LineChart.SortingPolicy.NONE);
 
-        Scene scene  = new Scene(new Group());
-        final VBox vbox = new VBox();
-        final HBox hCommandBox = new HBox();
+        final HBox root = new HBox();
+        final HBox pointBtnBar = new HBox();
+        final HBox graphBtnBar = new HBox();
+        final VBox graphModule = new VBox();
+        final VBox pointModule = new VBox();
 
         final Button generatePoints = new Button("Generate Points");
         generatePoints.setOnAction(new EventHandler<ActionEvent>() {
@@ -144,7 +146,7 @@ public class PathSimulator extends Application {
             }
         });
 
-        table.setEditable(true);
+        // table.setEditable(true);
 
         TableColumn xCol = new TableColumn("X");
         xCol.setMinWidth(50);
@@ -169,16 +171,25 @@ public class PathSimulator extends Application {
         vTableBox.setPadding(new Insets(10, 10, 10, 10));
         vTableBox.getChildren().addAll(table);
 
-        hCommandBox.setSpacing(10);
-        hCommandBox.getChildren().addAll(generatePoints, calculatePath);
+        graphBtnBar.setSpacing(10);
+        graphBtnBar.getChildren().addAll(calculatePath);
+        graphBtnBar.setPadding(new Insets(10, 10, 10, 50));
 
-        vbox.getChildren().addAll(lineChart, vTableBox, hCommandBox);
-        hCommandBox.setPadding(new Insets(10, 10, 10, 50));
+        pointBtnBar.setSpacing(10);
+        pointBtnBar.getChildren().addAll(generatePoints);
+        pointBtnBar.setPadding(new Insets(10, 10, 10, 50));
 
-        ((Group)scene.getRoot()).getChildren().add(vbox);
+        graphModule.getChildren().addAll(lineChart, graphBtnBar);
+        pointModule.getChildren().addAll(table, pointBtnBar);
+
+        root.getChildren().addAll(graphModule, pointModule);
+
+
+        Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass()
             .getResource("chart.css").toExternalForm());
         stage.setScene(scene);
+        stage.setTitle("Path");
         stage.show();
     }
 
