@@ -13,8 +13,31 @@ import java.util.Comparator;
  * @author Kairi Kozuma
  * @version 1.0
  */
-public interface SortAlgorithm {
+public abstract class SortAlgorithm {
 
-    public Path best();
+    protected List<Point> listOfPoints;
+    protected Path shortestPath;
 
+    /**
+     * Create a sort algorithm
+     * @param  listPoints List of points that the algorithm operates on
+     */
+    public SortAlgorithm(List<Point> listPoints) {
+        listOfPoints = listPoints;
+        shortestPath = new Path(listOfPoints);
+    }
+
+    /**
+     * Return best path from the points
+     * @return Path best path
+     */
+    public abstract Path bestPath();
+
+    /**
+     * Getter for list of points the algorithm operates on
+     * @return mPoints list of points
+     */
+    public List<Point> getListOfPoints() {
+        return listOfPoints;
+    }
 }

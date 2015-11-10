@@ -11,31 +11,26 @@ import java.util.Comparator;
 /**
  * Permutation algorithm (brute force)
  * @author Kairi Kozuma
- * @version 1.0
+ * @version 1.1
  */
-public class PermutationAlgorithm implements SortAlgorithm {
+public class PermutationAlgorithm extends SortAlgorithm {
 
-    // List of points to sort
-    private List<Point> mPoints;
-
-    // Private list of paths
-    private List<Path> mPathList;
-
-    // Constructor
+    /**
+     * Construct PermutationAlgorithm object from list of points
+     * @param  listPoints List of points that the algorithm operates on
+     */
     public PermutationAlgorithm(List<Point> listPoints) {
-        mPoints = listPoints;
-        mPathList = new ArrayList<Path>();
+        super(listPoints);
     }
 
     @Override
-    public Path best() {
+    public Path bestPath() {
         permutate();
-        mPathList.sort(Comparator.comparing(Path::length));
-        return mPathList.get(0);
+        return shortestPath;
     }
 
     private void permutate() {
-        permutation(new ArrayList<Point>(), mPoints);
+        permutation(new ArrayList<Point>(), listOfPoints);
     }
 
     private void permutation(List<Point> mPointsBegin, List<Point> mPointsEnd) {
@@ -44,7 +39,9 @@ public class PermutationAlgorithm implements SortAlgorithm {
             List<Point> mPoints = new ArrayList<Point>(mPointsBegin);
             mPoints.add(0, Path.originPoint);
             Path mPath = new Path(mPoints);
-            mPathList.add(mPath);
+            if (shortestPath.length() > mPath.length()) {
+                shortestPath = mPath;
+            }
         } else {
             for (int i = 0; i < n; i++) {
                 List<Point> mPE = new ArrayList<Point>(mPointsEnd);

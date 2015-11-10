@@ -137,7 +137,7 @@ public class PathSimulator extends Application {
         calculatePath.disableProperty().bind(Bindings.size(data).isEqualTo(0));
         calculatePath.setOnAction((ActionEvent e) -> {
 
-                Path bestPath = new PermutationAlgorithm(mPointList).best();
+                Path bestPath = new PermutationAlgorithm(mPointList).bestPath();
                 List<Point> mBestPointList = bestPath.getPoints();
 
                 data.clear();
