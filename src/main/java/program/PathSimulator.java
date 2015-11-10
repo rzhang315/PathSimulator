@@ -47,6 +47,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.control.Spinner;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
@@ -67,10 +68,9 @@ public class PathSimulator extends Application {
     private List<Point> mPointList;
     private SortAlgorithm mSortAlgorithm;
 
-    private TableView<Point> table = new TableView<Point>();
+    private final TableView<Point> table = new TableView<Point>();
     private final ObservableList<Point> data =
-        FXCollections.observableArrayList(
-        );
+        FXCollections.observableArrayList();
 
 
     @Override
@@ -80,25 +80,31 @@ public class PathSimulator extends Application {
         final NumberAxis yAxis = new NumberAxis(Y_MIN, Y_MAX, RESOLUTION);
         final LineChart<Number,Number> lineChart = new
             LineChart<Number,Number>(xAxis,yAxis);
+        final Label totalLengthLabel = new Label("Distance: ");
+        final Label totalAngleMaxLabel = new Label("Angle(Max): ");
+        final Label totalAngleMinLabel = new Label("Angle(Min): ");
+        final Text totalLength = new Text();
+        final Text totalAngleMax = new Text();
+        final Text totalAngleMin = new Text();
+
         lineChart.setAnimated(false);
         lineChart.setCreateSymbols(true);
         xAxis.setLabel("Feet");
         yAxis.setLabel("Feet");
         lineChart.setTitle("Points");
         lineChart.setLegendVisible(false);
-
-        XYChart.Series pointSeries = new XYChart.Series();
-        pointSeries.setName("Points Plotted");
-
-        // Connect points in order that they were added
         lineChart.setAxisSortingPolicy(LineChart.SortingPolicy.NONE);
 
+        final XYChart.Series pointSeries = new XYChart.Series();
+        pointSeries.setName("Points Plotted");
+
         // Create Spinner
-        Spinner<Integer> numPointsSpinner = new Spinner<Integer>(1, 12, 12, 1);
+        final Spinner<Integer> numPointsSpinner = new Spinner<Integer>(1, 12, 12, 1);
 
         final HBox root = new HBox();
         final HBox pointBtnBar = new HBox();
         final HBox graphBtnBar = new HBox();
+        final HBox graphInfoBar = new HBox();
         final VBox graphModule = new VBox();
         final VBox pointModule = new VBox();
 
@@ -129,11 +135,15 @@ public class PathSimulator extends Application {
         calculatePath.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
 
-                List<Point> mBestPointList =
-                    new PermutationAlgorithm(mPointList).best().getPoints();
+                Path bestPath = new PermutationAlgorithm(mPointList).best();
+                List<Point> mBestPointList = bestPath.getPoints();
 
                 data.clear();
                 data.addAll(mBestPointList);
+
+                totalLength.setText(String.format("%.3f ft", bestPath.length()));
+                totalAngleMax.setText(String.format("%.3f°", bestPath.angle()));
+                totalAngleMin.setText(String.format("%.3f°", bestPath.angleSmallest()));
 
                 XYChart.Series pointSeries = new XYChart.Series();
                 for (Point p : mBestPointList) {
@@ -230,17 +240,27 @@ public class PathSimulator extends Application {
         graphBtnBar.getChildren().addAll(calculatePath);
         graphBtnBar.setPadding(new Insets(10, 10, 10, 50));
 
+        graphInfoBar.setSpacing(10);
+        graphInfoBar.getChildren().addAll(
+            totalLengthLabel,
+            totalLength,
+            totalAngleMaxLabel,
+            totalAngleMax,
+            totalAngleMinLabel,
+            totalAngleMin
+        );
+        graphInfoBar.setPadding(new Insets(10, 10, 10, 50));
+
         pointBtnBar.setSpacing(10);
         pointBtnBar.getChildren().addAll(numPointsSpinner, generatePoints);
-        pointBtnBar.setPadding(new Insets(10, 10, 10, 50));
+        pointBtnBar.setPadding(new Insets(10, 10, 10, 10));
 
-        graphModule.getChildren().addAll(lineChart, graphBtnBar);
+        graphModule.getChildren().addAll(lineChart, graphInfoBar, graphBtnBar);
         pointModule.getChildren().addAll(table, pointBtnBar);
 
         root.getChildren().addAll(graphModule, pointModule);
 
-
-        Scene scene = new Scene(root);
+        final Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass()
             .getResource("chart.css").toExternalForm());
         stage.setScene(scene);

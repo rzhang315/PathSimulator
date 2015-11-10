@@ -26,12 +26,13 @@ public class Path implements Comparable<Path> {
      */
     public Path(List<Point> pList) {
         List<Point> mPList = new ArrayList<Point>(pList);
-        //mPList.add(0, initPoint);
+
         mPoints = mPList;
         for (int i = 0; i < pList.size() - 1; i++) {
             mSegments.add(new LineSegment(pList.get(i), pList.get(i + 1)));
         }
-        firstTurnAngle = 0; // TODO: Fix initial angle
+        firstTurnAngle = (new LineSegment(new Point(0,0), new Point(1,0)))
+            .angle(mSegments.get(0));
     }
 
     /**

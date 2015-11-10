@@ -6,12 +6,26 @@ package model;
  * @version 1.0
  */
 public class Point {
-    // x and y values of point
+    // x and y values of point, with index
     private int x;
     private int y;
     private int index;
 
-    // Constructors
+    /**
+     * Constructs point
+     * @param   x0 x value
+     * @param   y0 y value
+     */
+    public Point(int x0, int y0) {
+        this(x0, y0, 0);
+    }
+
+    /**
+     * Constructs point
+     * @param   x0 x value
+     * @param   y0 y value
+     * @param   i0 index value
+     */
     public Point(int x0, int y0, int i0) {
         x = x0;
         y = y0;
