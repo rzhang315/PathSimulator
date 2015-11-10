@@ -45,6 +45,7 @@ import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.control.Spinner;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -92,17 +93,20 @@ public class PathSimulator extends Application {
         // Connect points in order that they were added
         lineChart.setAxisSortingPolicy(LineChart.SortingPolicy.NONE);
 
+        // Create Spinner
+        Spinner<Integer> numPointsSpinner = new Spinner<Integer>(1, 12, 12, 1);
+
         final HBox root = new HBox();
         final HBox pointBtnBar = new HBox();
         final HBox graphBtnBar = new HBox();
         final VBox graphModule = new VBox();
         final VBox pointModule = new VBox();
 
-        final Button generatePoints = new Button("Generate Points");
+        final Button generatePoints = new Button("Random");
         generatePoints.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                 mPointList = PointGenerator
-                    .generate(8, X_MIN + 1, X_MAX - 1, Y_MIN + 1, Y_MAX - 1);
+                    .generate(numPointsSpinner.getValue(), X_MIN + 1, X_MAX - 1, Y_MIN + 1, Y_MAX - 1);
                 // PointGenerator.writeToFile(mPointList, "pointsRandom.txt");
                 data.clear();
                 data.addAll(mPointList);
@@ -216,6 +220,7 @@ public class PathSimulator extends Application {
         table.setItems(data);
         table.getColumns().addAll(xCol, yCol, indexCol);
 
+        // Organize layouts
         final VBox vTableBox = new VBox();
         vTableBox.setSpacing(5);
         vTableBox.setPadding(new Insets(10, 10, 10, 10));
@@ -226,7 +231,7 @@ public class PathSimulator extends Application {
         graphBtnBar.setPadding(new Insets(10, 10, 10, 50));
 
         pointBtnBar.setSpacing(10);
-        pointBtnBar.getChildren().addAll(generatePoints);
+        pointBtnBar.getChildren().addAll(numPointsSpinner, generatePoints);
         pointBtnBar.setPadding(new Insets(10, 10, 10, 50));
 
         graphModule.getChildren().addAll(lineChart, graphBtnBar);
