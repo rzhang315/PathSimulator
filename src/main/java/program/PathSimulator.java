@@ -72,20 +72,30 @@ public class PathSimulator extends Application {
     private final ObservableList<Point> data =
         FXCollections.observableArrayList();
 
+    private final NumberAxis xAxis = new NumberAxis(X_MIN, X_MAX, RESOLUTION);
+    private final NumberAxis yAxis = new NumberAxis(Y_MIN, Y_MAX, RESOLUTION);
+    private final LineChart<Number,Number> lineChart = new
+        LineChart<Number,Number>(xAxis,yAxis);
+    private final Label totalLengthLabel = new Label("Distance: ");
+    private final Label totalAngleMaxLabel = new Label("Angle(Max): ");
+    private final Label totalAngleMinLabel = new Label("Angle(Min): ");
+    private final Text totalLength = new Text("           ft");
+    private final Text totalAngleMax = new Text("             °");
+    private final Text totalAngleMin = new Text("             °");
+
+    final Spinner<Integer> numPointsSpinner = new Spinner<Integer>(1, 12, 12, 1);
+
+    private final HBox root = new HBox();
+    private final HBox pointActBar = new HBox();
+    private final HBox pointGenBar = new HBox();
+    private final HBox graphBtnBar = new HBox();
+    private final HBox graphInfoBar = new HBox();
+    private final VBox graphModule = new VBox();
+    private final VBox pointModule = new VBox();
+    private final VBox vTableBox = new VBox();
 
     @Override
     public void start(Stage stage) {
-
-        final NumberAxis xAxis = new NumberAxis(X_MIN, X_MAX, RESOLUTION);
-        final NumberAxis yAxis = new NumberAxis(Y_MIN, Y_MAX, RESOLUTION);
-        final LineChart<Number,Number> lineChart = new
-            LineChart<Number,Number>(xAxis,yAxis);
-        final Label totalLengthLabel = new Label("Distance: ");
-        final Label totalAngleMaxLabel = new Label("Angle(Max): ");
-        final Label totalAngleMinLabel = new Label("Angle(Min): ");
-        final Text totalLength = new Text();
-        final Text totalAngleMax = new Text();
-        final Text totalAngleMin = new Text();
 
         lineChart.setAnimated(false);
         lineChart.setCreateSymbols(true);
@@ -95,25 +105,25 @@ public class PathSimulator extends Application {
         lineChart.setLegendVisible(false);
         lineChart.setAxisSortingPolicy(LineChart.SortingPolicy.NONE);
 
-        final XYChart.Series pointSeries = new XYChart.Series();
-        pointSeries.setName("Points Plotted");
+        // TODO: make separate class for points and graph
 
         // Create Spinner
-        final Spinner<Integer> numPointsSpinner = new Spinner<Integer>(1, 12, 12, 1);
 
-        final HBox root = new HBox();
-        final HBox pointBtnBar = new HBox();
-        final HBox graphBtnBar = new HBox();
-        final HBox graphInfoBar = new HBox();
-        final VBox graphModule = new VBox();
-        final VBox pointModule = new VBox();
+
+        // TODO Delete individual points
+
+        final Button clearPoints = new Button("Clear");
+        clearPoints.setOnAction((ActionEvent e) -> {
+                clearPath();
+                data.clear();
+            }
+        );
 
         final Button generatePoints = new Button("Random");
-        generatePoints.setOnAction(new EventHandler<ActionEvent>() {
-            @Override public void handle(ActionEvent e) {
+        generatePoints.setOnAction((ActionEvent e) -> {
                 mPointList = PointGenerator
                     .generate(numPointsSpinner.getValue(), X_MIN + 1, X_MAX - 1, Y_MIN + 1, Y_MAX - 1);
-                // PointGenerator.writeToFile(mPointList, "pointsRandom.txt");
+                clearPath();
                 data.clear();
                 data.addAll(mPointList);
 
@@ -122,18 +132,12 @@ public class PathSimulator extends Application {
                     pointSeries.getData()
                         .add(new XYChart.Data(p.getX(), p.getY()));
                 }
-
-                // Clear chart
-                while(lineChart.getData().size() > 0) {
-                    lineChart.getData().remove(0);
-                }
                 lineChart.getData().addAll(pointSeries);
             }
-        });
+        );
 
         final Button calculatePath = new Button("Calculate Path");
-        calculatePath.setOnAction(new EventHandler<ActionEvent>() {
-            @Override public void handle(ActionEvent e) {
+        calculatePath.setOnAction((ActionEvent e) -> {
 
                 Path bestPath = new PermutationAlgorithm(mPointList).best();
                 List<Point> mBestPointList = bestPath.getPoints();
@@ -141,9 +145,9 @@ public class PathSimulator extends Application {
                 data.clear();
                 data.addAll(mBestPointList);
 
-                totalLength.setText(String.format("%.3f ft", bestPath.length()));
-                totalAngleMax.setText(String.format("%.3f°", bestPath.angle()));
-                totalAngleMin.setText(String.format("%.3f°", bestPath.angleSmallest()));
+                totalLength.setText(String.format("%6.3fft", bestPath.length()));
+                totalAngleMax.setText(String.format("%7.3f°", bestPath.angle()));
+                totalAngleMin.setText(String.format("%7.3f°", bestPath.angleSmallest()));
 
                 XYChart.Series pointSeries = new XYChart.Series();
                 for (Point p : mBestPointList) {
@@ -157,7 +161,7 @@ public class PathSimulator extends Application {
                 }
                 lineChart.getData().addAll(pointSeries);
             }
-        });
+        );
 
         // Set table properties
         table.setEditable(true);
@@ -231,7 +235,6 @@ public class PathSimulator extends Application {
         table.getColumns().addAll(xCol, yCol, indexCol);
 
         // Organize layouts
-        final VBox vTableBox = new VBox();
         vTableBox.setSpacing(5);
         vTableBox.setPadding(new Insets(10, 10, 10, 10));
         vTableBox.getChildren().addAll(table);
@@ -251,12 +254,16 @@ public class PathSimulator extends Application {
         );
         graphInfoBar.setPadding(new Insets(10, 10, 10, 50));
 
-        pointBtnBar.setSpacing(10);
-        pointBtnBar.getChildren().addAll(numPointsSpinner, generatePoints);
-        pointBtnBar.setPadding(new Insets(10, 10, 10, 10));
+        pointActBar.setSpacing(10);
+        pointActBar.getChildren().addAll(clearPoints);
+        pointActBar.setPadding(new Insets(10, 10, 10, 10));
+
+        pointGenBar.setSpacing(10);
+        pointGenBar.getChildren().addAll(numPointsSpinner, generatePoints);
+        pointGenBar.setPadding(new Insets(10, 10, 10, 10));
 
         graphModule.getChildren().addAll(lineChart, graphInfoBar, graphBtnBar);
-        pointModule.getChildren().addAll(table, pointBtnBar);
+        pointModule.getChildren().addAll(table, pointActBar, pointGenBar);
 
         root.getChildren().addAll(graphModule, pointModule);
 
@@ -266,6 +273,15 @@ public class PathSimulator extends Application {
         stage.setScene(scene);
         stage.setTitle("Path");
         stage.show();
+    }
+
+    private void clearPath() {
+        while(lineChart.getData().size() > 0) {
+            lineChart.getData().remove(0);
+        }
+        totalLength.setText("           ft");
+        totalAngleMax.setText("             °");
+        totalAngleMin.setText("             °");
     }
 
     public static void main(String[] args) {
