@@ -43,6 +43,30 @@ public class Point {
     }
 
     /**
+     * Sets the x value of the point
+     * @param int x
+     */
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    /**
+     * Sets the y value of the point
+     * @param int y
+     */
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    /**
+     * Sets the index of the point
+     * @param int index
+     */
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    /**
      * Return string representation of point
      * @return x and y values of point
      */

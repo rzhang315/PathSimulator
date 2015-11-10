@@ -10,6 +10,8 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.stage.Stage;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
@@ -38,16 +40,20 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-
+import javafx.util.Callback;
+import javafx.util.StringConverter;
 
 /**
  * Java FX class that plots best path
  * @author Kairi Kozuma
- * @version 1.0
+ * @version 1.1
  */
 public class PathSimulator extends Application {
 
@@ -63,15 +69,8 @@ public class PathSimulator extends Application {
     private TableView<Point> table = new TableView<Point>();
     private final ObservableList<Point> data =
         FXCollections.observableArrayList(
-            new Point(0,0,1),
-            new Point(0,0,2),
-            new Point(0,0,3),
-            new Point(0,0,4),
-            new Point(0,0,5),
-            new Point(0,0,6),
-            new Point(0,0,7),
-            new Point(0,0,8)
         );
+
 
     @Override
     public void start(Stage stage) {
@@ -146,22 +145,73 @@ public class PathSimulator extends Application {
             }
         });
 
-        // table.setEditable(true);
+        // Set table properties
+        table.setEditable(true);
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+        Callback<TableColumn<String,Integer>,TableCell<String,Integer>> cellFactory =
+            TextFieldTableCell.forTableColumn(new StringConverter<Integer>(){
+                    @Override
+                    public String toString(Integer object) {
+                        return object.toString();
+                    }
+
+                    @Override
+                    public Integer fromString(String string) {
+                        return Integer.parseInt(string);
+                }
+            });
+
 
         TableColumn xCol = new TableColumn("X");
-        xCol.setMinWidth(50);
+        xCol.setMinWidth(30);
         xCol.setCellValueFactory(
                 new PropertyValueFactory<Point, Integer>("x"));
+        xCol.setCellFactory(cellFactory);
+        xCol.setOnEditCommit(
+            new EventHandler<CellEditEvent<Point, Integer>>() {
+                @Override
+                public void handle(CellEditEvent<Point, Integer> t) {
+                    ((Point) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())
+                        ).setX(t.getNewValue());
+                }
+             }
+        );
+
 
         TableColumn yCol = new TableColumn("Y");
-        yCol.setMinWidth(50);
+        yCol.setMinWidth(30);
         yCol.setCellValueFactory(
                 new PropertyValueFactory<Point, Integer>("y"));
+        yCol.setCellFactory(cellFactory);
+        yCol.setOnEditCommit(
+            new EventHandler<CellEditEvent<Point, Integer>>() {
+                @Override
+                public void handle(CellEditEvent<Point, Integer> t) {
+                    ((Point) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())
+                        ).setY(t.getNewValue());
+                }
+             }
+        );
+
 
         TableColumn indexCol = new TableColumn("Index");
-        indexCol.setMinWidth(50);
+        indexCol.setMinWidth(30);
         indexCol.setCellValueFactory(
                 new PropertyValueFactory<Point, Integer>("index"));
+        indexCol.setCellFactory(cellFactory);
+        indexCol.setOnEditCommit(
+            new EventHandler<CellEditEvent<Point, Integer>>() {
+                @Override
+                public void handle(CellEditEvent<Point, Integer> t) {
+                    ((Point) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())
+                        ).setIndex(t.getNewValue());
+                }
+             }
+        );
 
         table.setItems(data);
         table.getColumns().addAll(xCol, yCol, indexCol);
