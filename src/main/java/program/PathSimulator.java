@@ -51,11 +51,12 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
+import javafx.beans.binding.Bindings;
 
 /**
  * Java FX class that plots best path
  * @author Kairi Kozuma
- * @version 1.1
+ * @version 1.2
  */
 public class PathSimulator extends Application {
 
@@ -106,10 +107,6 @@ public class PathSimulator extends Application {
         lineChart.setAxisSortingPolicy(LineChart.SortingPolicy.NONE);
 
         // TODO: make separate class for points and graph
-
-        // Create Spinner
-
-
         // TODO Delete individual points
 
         final Button clearPoints = new Button("Clear");
@@ -137,6 +134,7 @@ public class PathSimulator extends Application {
         );
 
         final Button calculatePath = new Button("Calculate Path");
+        calculatePath.disableProperty().bind(Bindings.size(data).isEqualTo(0));
         calculatePath.setOnAction((ActionEvent e) -> {
 
                 Path bestPath = new PermutationAlgorithm(mPointList).best();
