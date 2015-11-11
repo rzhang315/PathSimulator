@@ -88,7 +88,7 @@ public class PathSimulator extends Application {
     private final Text totalLength = new Text("           ft");
     private final Text totalAngleMax = new Text("             °");
     private final Text totalAngleMin = new Text("             °");
-    private final Text totalTime = new Text("         s");
+    private final Text totalTime = new Text("      s");
 
     final Spinner<Integer> numPointsSpinner = new Spinner<Integer>(1, 12, 12, 1);
     // TODO: Decide on limits
@@ -109,7 +109,7 @@ public class PathSimulator extends Application {
         lineChart.setAnimated(false);
         lineChart.setCreateSymbols(true);
         lineChart.setPrefHeight(750);
-        lineChart.setPrefWidth(700);
+        lineChart.setPrefWidth(500);
         xAxis.setLabel("Feet");
         yAxis.setLabel("Feet");
         lineChart.setTitle("Points");

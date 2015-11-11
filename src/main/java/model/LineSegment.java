@@ -53,7 +53,9 @@ public class LineSegment {
      * @return length of the segment
      */
     public double length() {
-        return Math.hypot(p2.getX() - p1.getX(), p2.getY() - p1.getY());
+        return Math.sqrt(
+            Math.pow(p2.getX() - p1.getX(), 2.0)
+          + Math.pow(p2.getY() - p1.getY(), 2.0));
     }
 
     /**
