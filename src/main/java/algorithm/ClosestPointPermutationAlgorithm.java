@@ -28,7 +28,7 @@ public class ClosestPointPermutationAlgorithm extends PermutationAlgorithm {
      */
     public ClosestPointPermutationAlgorithm(List<Point> listPoints, int branch, int iteration) {
         super(listPoints);
-        setNumPath((long) Math.pow(branch, iteration) * MathUtil.factorial(listPoints.size() - iteration));
+        numPath = (long) Math.pow(branch, iteration) * MathUtil.factorial(listPoints.size() - iteration);
         this.branch = branch;
         this.iteration = iteration;
     }
@@ -39,7 +39,7 @@ public class ClosestPointPermutationAlgorithm extends PermutationAlgorithm {
     @Override
     public Path bestPath() {
         closestPointThenPermutate();
-        return getPath();
+        return shortestPath;
     }
 
     private void closestPointThenPermutate() {
@@ -47,7 +47,7 @@ public class ClosestPointPermutationAlgorithm extends PermutationAlgorithm {
         Point origin = new Point(0,0,0);
         List<Point> head = new ArrayList<Point>();
         head.add(origin);
-        closestPointPerm(head, getListOfPoints());
+        closestPointPerm(head, listOfPoints);
     }
 
     private void closestPointPerm(List<Point> head, List<Point> end) {

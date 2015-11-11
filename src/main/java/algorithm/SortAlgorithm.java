@@ -15,9 +15,10 @@ import java.util.Comparator;
  */
 public abstract class SortAlgorithm {
 
-    private List<Point> listOfPoints;
-    private Path shortestPath;
-    private long numPath;
+    protected List<Point> listOfPoints;
+    protected Path shortestPath;
+    protected double shortestPathLength;
+    protected long numPath;
 
     /**
      * Create a sort algorithm
@@ -26,6 +27,7 @@ public abstract class SortAlgorithm {
     public SortAlgorithm(List<Point> listPoints) {
         listOfPoints = listPoints;
         shortestPath = new Path(listOfPoints);
+        shortestPathLength = shortestPath.length();
         numPath = 0;
     }
 
@@ -41,30 +43,6 @@ public abstract class SortAlgorithm {
      */
     public List<Point> getListOfPoints() {
         return listOfPoints;
-    }
-
-    /**
-     * Set the shortest path
-     * @param path Path to be set as shortest
-     */
-    protected void setPath(Path path) {
-        shortestPath = path;
-    }
-
-    /**
-     * Get the shortestPath
-     * @return Path shortestPath
-     */
-    protected Path getPath() {
-        return shortestPath;
-    }
-
-    /**
-     * Set number of paths checked
-     * @param numPath number of paths checked in algorithm
-     */
-    protected void setNumPath(long numPath) {
-        this.numPath = numPath;
     }
 
     /**

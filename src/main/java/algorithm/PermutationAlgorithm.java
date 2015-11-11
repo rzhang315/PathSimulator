@@ -22,17 +22,17 @@ public class PermutationAlgorithm extends SortAlgorithm {
      */
     public PermutationAlgorithm(List<Point> listPoints) {
         super(listPoints);
-        setNumPath(MathUtil.factorial(listPoints.size()));
+        numPath = MathUtil.factorial(listPoints.size());
     }
 
     @Override
     public Path bestPath() {
         permutate();
-        return getPath();
+        return shortestPath;
     }
 
     protected void permutate() {
-        permutation(new ArrayList<Point>(), getListOfPoints());
+        permutation(new ArrayList<Point>(), listOfPoints);
     }
 
     protected void permutation(List<Point> mPointsBegin, List<Point> mPointsEnd) {
@@ -41,8 +41,10 @@ public class PermutationAlgorithm extends SortAlgorithm {
             List<Point> mPoints = new ArrayList<Point>(mPointsBegin);
             mPoints.add(0, Path.originPoint);
             Path mPath = new Path(mPoints);
-            if (getPath().length() > mPath.length()) {
-                setPath(mPath);
+            double pathLength = mPath.length();
+            if (shortestPathLength > pathLength) {
+                shortestPath = mPath;
+                shortestPathLength = pathLength;
             }
         } else {
             for (int i = 0; i < n; i++) {
