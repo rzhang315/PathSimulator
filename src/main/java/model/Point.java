@@ -90,15 +90,6 @@ public class Point {
     }
 
     /**
-     * Get the length to another point
-     * @param  p point to get the length to
-     * @return   double length to point
-     */
-    public double lengthTo(Point p) {
-        return Math.hypot(p.getX() - x, p.getY() - y);
-    }
-
-    /**
      * Checks if points are equal
      * @return boolean if points are equal
      */
