@@ -11,7 +11,7 @@ public class LineSegment {
     Point p2;
 
     // Constructor
-    LineSegment(Point start, Point end) {
+    public LineSegment(Point start, Point end) {
         p1 = start;
         p2 = end;
     }
@@ -30,6 +30,22 @@ public class LineSegment {
      */
     public int getDY() {
         return p2.getY() - p1.getY();
+    }
+
+    /**
+     * Return the first point of the line segment
+     * @return Point first point
+     */
+    public Point getStart() {
+        return p1;
+    }
+
+    /**
+     * Return the second point of line segment
+     * @return Point second point
+     */
+    public Point getEnd() {
+        return p2;
     }
 
     /**

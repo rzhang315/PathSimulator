@@ -4,6 +4,7 @@ import model.Path;
 import model.Point;
 import algorithm.SortAlgorithm;
 import algorithm.PermutationAlgorithm;
+import algorithm.ClosestPointPermutationAlgorithm;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.chart.NumberAxis;
@@ -16,6 +17,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -85,6 +89,9 @@ public class PathSimulator extends Application {
     private final Text totalAngleMin = new Text("             °");
 
     final Spinner<Integer> numPointsSpinner = new Spinner<Integer>(1, 12, 12, 1);
+    // TODO: Decide on limits
+    final Spinner<Integer> numBranchSpinner = new Spinner<Integer>(1, 6, 4, 1);
+    final Spinner<Integer> numIterationSpinner = new Spinner<Integer>(1, 12, 5, 1);
 
     private final HBox root = new HBox();
     private final HBox pointActBar = new HBox();
@@ -97,7 +104,6 @@ public class PathSimulator extends Application {
 
     @Override
     public void start(Stage stage) {
-
         lineChart.setAnimated(false);
         lineChart.setCreateSymbols(true);
         xAxis.setLabel("Feet");
@@ -133,9 +139,9 @@ public class PathSimulator extends Application {
             }
         );
 
-        final Button calculatePath = new Button("Calculate Path");
-        calculatePath.disableProperty().bind(Bindings.size(data).isEqualTo(0));
-        calculatePath.setOnAction((ActionEvent e) -> {
+        final Button calculatePath1 = new Button("Permutate");
+        calculatePath1.disableProperty().bind(Bindings.size(data).isEqualTo(0));
+        calculatePath1.setOnAction((ActionEvent e) -> {
 
                 Path bestPath = new PermutationAlgorithm(mPointList).bestPath();
                 List<Point> mBestPointList = bestPath.getPoints();
@@ -160,6 +166,39 @@ public class PathSimulator extends Application {
                 lineChart.getData().addAll(pointSeries);
             }
         );
+
+        final Button calculatePath2 = new Button("ClosestPointPerm");
+        calculatePath2.disableProperty().bind(Bindings.size(data).isEqualTo(0));
+        calculatePath2.setOnAction((ActionEvent e) -> {
+
+                Path bestPath = new ClosestPointPermutationAlgorithm(mPointList,
+                    numBranchSpinner.getValue(), numIterationSpinner.getValue()).bestPath();
+                List<Point> mBestPointList = bestPath.getPoints();
+
+                data.clear();
+                data.addAll(mBestPointList);
+
+                totalLength.setText(String.format("%6.3fft", bestPath.length()));
+                totalAngleMax.setText(String.format("%7.3f°", bestPath.angle()));
+                totalAngleMin.setText(String.format("%7.3f°", bestPath.angleSmallest()));
+
+                XYChart.Series pointSeries = new XYChart.Series();
+                for (Point p : mBestPointList) {
+                    pointSeries.getData()
+                        .add(new XYChart.Data(p.getX(), p.getY()));
+                }
+
+                // Connect points in order that they were added
+                if(lineChart.getData().size() > 1) {
+                    lineChart.getData().remove(lineChart.getData().size() - 1);
+                }
+                lineChart.getData().addAll(pointSeries);
+            }
+        );
+
+        List<Button> calcPathButtons = new ArrayList<Button>();
+        calcPathButtons.add(calculatePath1);
+        calcPathButtons.add(calculatePath2);
 
         // Set table properties
         table.setEditable(true);
@@ -238,7 +277,8 @@ public class PathSimulator extends Application {
         vTableBox.getChildren().addAll(table);
 
         graphBtnBar.setSpacing(10);
-        graphBtnBar.getChildren().addAll(calculatePath);
+        graphBtnBar.getChildren().addAll(calcPathButtons);
+        graphBtnBar.getChildren().addAll(numBranchSpinner, numIterationSpinner);
         graphBtnBar.setPadding(new Insets(10, 10, 10, 50));
 
         graphInfoBar.setSpacing(10);

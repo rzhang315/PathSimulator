@@ -26,21 +26,21 @@ public class PermutationAlgorithm extends SortAlgorithm {
     @Override
     public Path bestPath() {
         permutate();
-        return shortestPath;
+        return getPath();
     }
 
-    private void permutate() {
-        permutation(new ArrayList<Point>(), listOfPoints);
+    protected void permutate() {
+        permutation(new ArrayList<Point>(), getListOfPoints());
     }
 
-    private void permutation(List<Point> mPointsBegin, List<Point> mPointsEnd) {
+    protected void permutation(List<Point> mPointsBegin, List<Point> mPointsEnd) {
         int n = mPointsEnd.size();
         if (n == 0) {
             List<Point> mPoints = new ArrayList<Point>(mPointsBegin);
             mPoints.add(0, Path.originPoint);
             Path mPath = new Path(mPoints);
-            if (shortestPath.length() > mPath.length()) {
-                shortestPath = mPath;
+            if (getPath().length() > mPath.length()) {
+                setPath(mPath);
             }
         } else {
             for (int i = 0; i < n; i++) {

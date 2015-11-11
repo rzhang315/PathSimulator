@@ -15,8 +15,8 @@ import java.util.Comparator;
  */
 public abstract class SortAlgorithm {
 
-    protected List<Point> listOfPoints;
-    protected Path shortestPath;
+    private List<Point> listOfPoints;
+    private Path shortestPath;
 
     /**
      * Create a sort algorithm
@@ -39,5 +39,21 @@ public abstract class SortAlgorithm {
      */
     public List<Point> getListOfPoints() {
         return listOfPoints;
+    }
+
+    /**
+     * Set the shortest path
+     * @param path Path to be set as shortest
+     */
+    protected void setPath(Path path) {
+        shortestPath = path;
+    }
+
+    /**
+     * Get the shortestPath
+     * @return Path shortestPath
+     */
+    protected Path getPath() {
+        return shortestPath;
     }
 }
