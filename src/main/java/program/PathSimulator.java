@@ -87,21 +87,28 @@ public class PathSimulator extends Application {
     private final Label totalAngleMaxLabel = new Label("Angle(Max): ");
     private final Label totalAngleMinLabel = new Label("Angle(Min): ");
     private final Label totalTimeLabel = new Label("Time: ");
+    private final Label totalPathCheckedLabel = new Label("Checked Paths: ");
     private final Text totalLength = new Text("           ft");
     private final Text totalAngleMax = new Text("             °");
     private final Text totalAngleMin = new Text("             °");
     private final Text totalTime = new Text("         s");
+    private final Label totalPathChecked = new Label("      ");
 
     final Spinner<Integer> numPointsSpinner = new Spinner<Integer>(1, 12, 12, 1);
     // TODO: Decide on limits
-    final Spinner<Integer> numBranchSpinner = new Spinner<Integer>(1, 6, 3, 1);
-    final Spinner<Integer> numIterationSpinner = new Spinner<Integer>(1, 12, 4, 1);
+    //
+    private final Label numBranchLabel = new Label("Branches");
+    private final Spinner<Integer> numBranchSpinner = new Spinner<Integer>(1, 6, 3, 1);
+
+    private final Label numIteartionLabel = new Label("Iterations");
+    private final Spinner<Integer> numIterationSpinner = new Spinner<Integer>(1, 12, 4, 1);
 
     private final HBox root = new HBox();
     private final HBox pointActBar = new HBox();
     private final HBox pointGenBar = new HBox();
     private final HBox graphBtnBar = new HBox();
     private final HBox graphInfoBar = new HBox();
+    private final HBox algInfoBar = new HBox();
     private final VBox graphModule = new VBox();
     private final VBox pointModule = new VBox();
     private final VBox vTableBox = new VBox();
@@ -149,9 +156,11 @@ public class PathSimulator extends Application {
         calculatePath1.disableProperty().bind(Bindings.size(data).isEqualTo(0));
         calculatePath1.setOnAction((ActionEvent e) -> {
                 Stopwatch stopwatch = Stopwatch.createStarted();
-                Path bestPath = new PermutationAlgorithm(mPointList).bestPath();
+                SortAlgorithm mAlgorithm = new PermutationAlgorithm(mPointList);
+                Path bestPath = mAlgorithm.bestPath();
                 stopwatch.stop();
                 totalTime.setText(String.format("%6.3fs", stopwatch.elapsedSeconds()));
+                totalPathChecked.setText(String.format("%9d", mAlgorithm.getNumPath()));
 
                 List<Point> mBestPointList = bestPath.getPoints();
 
@@ -181,10 +190,12 @@ public class PathSimulator extends Application {
         calculatePath2.setOnAction((ActionEvent e) -> {
 
                 Stopwatch stopwatch = Stopwatch.createStarted();
-                Path bestPath = new ClosestPointPermutationAlgorithm(mPointList,
-                    numBranchSpinner.getValue(), numIterationSpinner.getValue()).bestPath();
+                SortAlgorithm mAlgorithm = new ClosestPointPermutationAlgorithm(mPointList,
+                    numBranchSpinner.getValue(), numIterationSpinner.getValue());
+                Path bestPath = mAlgorithm.bestPath();
                 stopwatch.stop();
                 totalTime.setText(String.format("%6.3fs", stopwatch.elapsedSeconds()));
+                totalPathChecked.setText(String.format("%9d", mAlgorithm.getNumPath()));
 
                 List<Point> mBestPointList = bestPath.getPoints();
 
@@ -295,8 +306,12 @@ public class PathSimulator extends Application {
 
         graphBtnBar.setSpacing(10);
         graphBtnBar.getChildren().addAll(calcPathButtons);
-        graphBtnBar.getChildren().addAll(numBranchSpinner, numIterationSpinner,
-            totalTimeLabel, totalTime);
+        graphBtnBar.getChildren().addAll(
+            numBranchLabel,
+            numBranchSpinner,
+            numIteartionLabel,
+            numIterationSpinner
+        );
         graphBtnBar.setPadding(new Insets(10, 10, 10, 50));
 
         graphInfoBar.setSpacing(10);
@@ -310,6 +325,15 @@ public class PathSimulator extends Application {
         );
         graphInfoBar.setPadding(new Insets(10, 10, 10, 50));
 
+        algInfoBar.setSpacing(10);
+        algInfoBar.getChildren().addAll(
+            totalTimeLabel,
+            totalTime,
+            totalPathCheckedLabel,
+            totalPathChecked
+        );
+        algInfoBar.setPadding(new Insets(10, 10, 10, 50));
+
         pointActBar.setSpacing(10);
         pointActBar.getChildren().addAll(clearPoints);
         pointActBar.setPadding(new Insets(10, 10, 10, 10));
@@ -318,7 +342,7 @@ public class PathSimulator extends Application {
         pointGenBar.getChildren().addAll(numPointsSpinner, generatePoints);
         pointGenBar.setPadding(new Insets(10, 10, 10, 10));
 
-        graphModule.getChildren().addAll(lineChart, graphInfoBar, graphBtnBar);
+        graphModule.getChildren().addAll(lineChart, graphInfoBar, algInfoBar, graphBtnBar);
         pointModule.getChildren().addAll(table, pointActBar, pointGenBar);
 
         root.getChildren().addAll(graphModule, pointModule);
