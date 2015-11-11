@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.Comparator;
 import java.util.Collections;
+import util.MathUtil;
 /**
  * Closest point permutation algorithm (hybrid)
  * @author Kairi Kozuma
@@ -27,6 +28,7 @@ public class ClosestPointPermutationAlgorithm extends PermutationAlgorithm {
      */
     public ClosestPointPermutationAlgorithm(List<Point> listPoints, int branch, int iteration) {
         super(listPoints);
+        setNumPath((long) Math.pow(branch, iteration) * MathUtil.factorial(listPoints.size() - iteration));
         this.branch = branch;
         this.iteration = iteration;
     }

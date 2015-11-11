@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.Comparator;
+import util.MathUtil;
 
 /**
  * Permutation algorithm (brute force)
@@ -21,6 +22,7 @@ public class PermutationAlgorithm extends SortAlgorithm {
      */
     public PermutationAlgorithm(List<Point> listPoints) {
         super(listPoints);
+        setNumPath(MathUtil.factorial(listPoints.size()));
     }
 
     @Override

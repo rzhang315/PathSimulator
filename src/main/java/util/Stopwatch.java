@@ -1,4 +1,4 @@
-package program;
+package util;
 
 /**
  * Simple stopwatch class to measure performance

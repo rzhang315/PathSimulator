@@ -17,6 +17,7 @@ public abstract class SortAlgorithm {
 
     private List<Point> listOfPoints;
     private Path shortestPath;
+    private long numPath;
 
     /**
      * Create a sort algorithm
@@ -25,6 +26,7 @@ public abstract class SortAlgorithm {
     public SortAlgorithm(List<Point> listPoints) {
         listOfPoints = listPoints;
         shortestPath = new Path(listOfPoints);
+        numPath = 0;
     }
 
     /**
@@ -55,5 +57,21 @@ public abstract class SortAlgorithm {
      */
     protected Path getPath() {
         return shortestPath;
+    }
+
+    /**
+     * Set number of paths checked
+     * @param numPath number of paths checked in algorithm
+     */
+    protected void setNumPath(long numPath) {
+        this.numPath = numPath;
+    }
+
+    /**
+     * Get number of paths checked
+     * @return numPath number of paths checked in algorithm
+     */
+    public long getNumPath() {
+        return numPath;
     }
 }

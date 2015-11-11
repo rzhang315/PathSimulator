@@ -1,4 +1,4 @@
-package program;
+package util;
 
 import model.Path;
 import model.Point;
