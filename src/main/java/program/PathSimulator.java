@@ -60,7 +60,7 @@ import javafx.beans.binding.Bindings;
 /**
  * Java FX class that plots best path
  * @author Kairi Kozuma
- * @version 1.2
+ * @version 1.3
  */
 public class PathSimulator extends Application {
 
@@ -84,14 +84,16 @@ public class PathSimulator extends Application {
     private final Label totalLengthLabel = new Label("Distance: ");
     private final Label totalAngleMaxLabel = new Label("Angle(Max): ");
     private final Label totalAngleMinLabel = new Label("Angle(Min): ");
+    private final Label totalTimeLabel = new Label("Time: ");
     private final Text totalLength = new Text("           ft");
     private final Text totalAngleMax = new Text("             °");
     private final Text totalAngleMin = new Text("             °");
+    private final Text totalTime = new Text("      s");
 
     final Spinner<Integer> numPointsSpinner = new Spinner<Integer>(1, 12, 12, 1);
     // TODO: Decide on limits
-    final Spinner<Integer> numBranchSpinner = new Spinner<Integer>(1, 6, 4, 1);
-    final Spinner<Integer> numIterationSpinner = new Spinner<Integer>(1, 12, 5, 1);
+    final Spinner<Integer> numBranchSpinner = new Spinner<Integer>(1, 6, 3, 1);
+    final Spinner<Integer> numIterationSpinner = new Spinner<Integer>(1, 12, 4, 1);
 
     private final HBox root = new HBox();
     private final HBox pointActBar = new HBox();
@@ -106,6 +108,8 @@ public class PathSimulator extends Application {
     public void start(Stage stage) {
         lineChart.setAnimated(false);
         lineChart.setCreateSymbols(true);
+        lineChart.setPrefHeight(750);
+        lineChart.setPrefWidth(500);
         xAxis.setLabel("Feet");
         yAxis.setLabel("Feet");
         lineChart.setTitle("Points");
@@ -142,8 +146,11 @@ public class PathSimulator extends Application {
         final Button calculatePath1 = new Button("Permutate");
         calculatePath1.disableProperty().bind(Bindings.size(data).isEqualTo(0));
         calculatePath1.setOnAction((ActionEvent e) -> {
-
+                Stopwatch stopwatch = Stopwatch.createStarted();
                 Path bestPath = new PermutationAlgorithm(mPointList).bestPath();
+                stopwatch.stop();
+                totalTime.setText(String.format("%6.3fs", stopwatch.elapsedSeconds()));
+
                 List<Point> mBestPointList = bestPath.getPoints();
 
                 data.clear();
@@ -171,8 +178,12 @@ public class PathSimulator extends Application {
         calculatePath2.disableProperty().bind(Bindings.size(data).isEqualTo(0));
         calculatePath2.setOnAction((ActionEvent e) -> {
 
+                Stopwatch stopwatch = Stopwatch.createStarted();
                 Path bestPath = new ClosestPointPermutationAlgorithm(mPointList,
                     numBranchSpinner.getValue(), numIterationSpinner.getValue()).bestPath();
+                stopwatch.stop();
+                totalTime.setText(String.format("%6.3fs", stopwatch.elapsedSeconds()));
+
                 List<Point> mBestPointList = bestPath.getPoints();
 
                 data.clear();
@@ -196,12 +207,16 @@ public class PathSimulator extends Application {
             }
         );
 
+        numBranchSpinner.setPrefWidth(100);
+        numIterationSpinner.setPrefWidth(100);
+
         List<Button> calcPathButtons = new ArrayList<Button>();
         calcPathButtons.add(calculatePath1);
         calcPathButtons.add(calculatePath2);
 
         // Set table properties
         table.setEditable(true);
+        table.setPrefHeight(700);
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         Callback<TableColumn<String,Integer>,TableCell<String,Integer>> cellFactory =
@@ -278,7 +293,8 @@ public class PathSimulator extends Application {
 
         graphBtnBar.setSpacing(10);
         graphBtnBar.getChildren().addAll(calcPathButtons);
-        graphBtnBar.getChildren().addAll(numBranchSpinner, numIterationSpinner);
+        graphBtnBar.getChildren().addAll(numBranchSpinner, numIterationSpinner,
+            totalTimeLabel, totalTime);
         graphBtnBar.setPadding(new Insets(10, 10, 10, 50));
 
         graphInfoBar.setSpacing(10);
