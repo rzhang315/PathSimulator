@@ -45,37 +45,35 @@ public class ClosestPointPermutationAlgorithm extends PermutationAlgorithm {
         Point origin = new Point(0,0,0);
         List<Point> head = new ArrayList<Point>();
         head.add(origin);
-        closestPointPerm(head, getListOfPoints(), branch, iteration);
+        closestPointPerm(head, getListOfPoints());
     }
 
-    private void closestPointPerm(List<Point> head, List<Point> end, int numPoints, int numIteration) {
-        if (numPoints > end.size()) {
-            return;
-        }
-
-        if (head.size() == numIteration + 1) {
+    private void closestPointPerm(List<Point> head, List<Point> end) {
+        if (head.size() == iteration + 1) {
             head.remove(0); // Remove the origin from permutation
             permutation(head, end);
-        }
+        } else {
+            int numPointCheck = branch < end.size() ? branch : end.size();
 
-        List<LineSegment> mSegments = new ArrayList<LineSegment>();
-        Point p = head.get(head.size() - 1);
-        for (Point pnt : end) {
-            mSegments.add(new LineSegment(p, pnt));
-        }
+            List<LineSegment> mSegments = new ArrayList<LineSegment>(end.size());
+            Point p = head.get(head.size() - 1);
+            for (Point pnt : end) {
+                mSegments.add(new LineSegment(p, pnt));
+            }
 
-        Collections.sort(mSegments, Comparator.comparing(LineSegment::length));
-        List<Point> closePoints = new ArrayList<Point>(numPoints);
-        for (int i = 0; i < numPoints; i++) {
-            closePoints.add(mSegments.get(i).getEnd());
-        }
+            Collections.sort(mSegments, Comparator.comparing(LineSegment::length));
+            List<Point> closePoints = new ArrayList<Point>(numPointCheck);
+            for (int i = 0; i < numPointCheck; i++) {
+                closePoints.add(mSegments.get(i).getEnd());
+            }
 
-        for (Point pNext : closePoints) {
-            List<Point> mHead = new ArrayList<Point>(head);
-            List<Point> mEnd = new ArrayList<Point>(end);
-            mHead.add(pNext);
-            mEnd.remove(pNext);
-            closestPointPerm(mHead, mEnd, branch, numIteration - 1);
+            for (Point pNext : closePoints) {
+                List<Point> mHead = new ArrayList<Point>(head);
+                List<Point> mEnd = new ArrayList<Point>(end);
+                mHead.add(pNext);
+                mEnd.remove(pNext);
+                closestPointPerm(mHead, mEnd);
+            }
         }
     }
 }
