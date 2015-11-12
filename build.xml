@@ -1,0 +1,73 @@
+<project name="PathSimulator" default="default" basedir="."
+	xmlns:fx="javafx:com.sun.javafx.tools.ant">
+
+    <property name="JAVA_HOME" value="C:\Program Files (x86)\Java\jdk1.8.0_40"/>
+
+	<description>
+		Create PathSimulator project (JAR)
+	</description>
+
+	<property name="projectName" value="PathSimulator" />
+
+	<!-- Java sources -->
+	<property name="src.dir" location="src" />
+
+    <!-- Java sources -->
+	<property name="src.main.java.dir" location="src/main/java" />
+
+	<!-- Java classes -->
+	<property name="build.dir" location="build" />
+
+	<!-- Output, Jar -->
+	<property name="dist.dir" location="dist" />
+
+    <target name="default" depends="clean,compile">
+
+    <taskdef resource="com/sun/javafx/tools/ant/antlib.xml"
+      uri="javafx:com.sun.javafx.tools.ant"
+      classpath="${JAVA_HOME}/lib/ant-javafx.jar"/>
+
+      <fx:application id="PathSimulatorID"
+        name="JavaFXPathSimulatorApp"
+        mainClass="program.PathSimulator"/>
+
+      <fx:resources id="appRes">
+        <fx:fileset dir="${dist.dir}" includes="PathSimulator.jar"/>
+      </fx:resources>
+
+      <fx:jar destfile="${dist.dir}/PathSimulator.jar">
+        <fx:application refid="PathSimulatorID"/>
+        <fx:resources refid="appRes"/>
+        <fileset dir="${build.dir}"/>
+      </fx:jar>
+
+  </target>
+
+  <target name="clean">
+    <mkdir dir="${build.dir}"/>
+    <mkdir dir="${dist.dir}"/>
+
+    <delete>
+      <fileset dir="${build.dir}" includes="**/*"/>
+      <fileset dir="${dist.dir}" includes="**/*"/>
+    </delete>
+
+  </target>
+
+  <target name="compile" depends="clean">
+    <copy todir="${build.dir}">
+      <fileset dir="${src.main.java.dir}">
+          <exclude name="**/*.java"/>
+      </fileset>
+    </copy>
+    <javac includeantruntime="false"
+      srcdir="${src.dir}"
+      destdir="${build.dir}"
+      fork="yes"
+      executable="${JAVA_HOME}/bin/javac"
+      source="1.8"
+      debug="on">
+    </javac>
+  </target>
+
+</project>
