@@ -7,6 +7,7 @@ import algorithm.PermutationAlgorithm;
 import algorithm.ClosestPointPermutationAlgorithm;
 import util.Stopwatch;
 import util.PointGenerator;
+import java.text.NumberFormat;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.chart.NumberAxis;
@@ -49,6 +50,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.control.Spinner;
@@ -72,12 +74,10 @@ public class PathSimulator extends Application {
     private static final int Y_MIN = -6;
     private static final int RESOLUTION = 1;
 
-    private List<Point> mPointList;
     private SortAlgorithm mSortAlgorithm;
 
     private final TableView<Point> table = new TableView<Point>();
-    private final ObservableList<Point> data =
-        FXCollections.observableArrayList();
+    private final ObservableList<Point> data = FXCollections.observableArrayList();
 
     private final NumberAxis xAxis = new NumberAxis(X_MIN, X_MAX, RESOLUTION);
     private final NumberAxis yAxis = new NumberAxis(Y_MIN, Y_MAX, RESOLUTION);
@@ -91,19 +91,22 @@ public class PathSimulator extends Application {
     private final Text totalLength = new Text("           ft");
     private final Text totalAngleMax = new Text("             °");
     private final Text totalAngleMin = new Text("             °");
-    private final Text totalTime = new Text("         s");
+    private final Text totalTime = new Text("          s");
     private final Label totalPathChecked = new Label("      ");
 
     final Spinner<Integer> numPointsSpinner = new Spinner<Integer>(1, 12, 12, 1);
-    // TODO: Decide on limits
-    //
+    // TODO: Decide on limits dynamically
     private final Label numBranchLabel = new Label("Branches");
     private final Spinner<Integer> numBranchSpinner = new Spinner<Integer>(1, 6, 3, 1);
 
     private final Label numIteartionLabel = new Label("Iterations");
     private final Spinner<Integer> numIterationSpinner = new Spinner<Integer>(1, 12, 4, 1);
 
+    private final TextField xinput = new TextField();
+    private final TextField yinput = new TextField();
+
     private final HBox root = new HBox();
+    private final HBox pointAddBar = new HBox();
     private final HBox pointActBar = new HBox();
     private final HBox pointGenBar = new HBox();
     private final HBox graphBtnBar = new HBox();
@@ -117,8 +120,8 @@ public class PathSimulator extends Application {
     public void start(Stage stage) {
         lineChart.setAnimated(false);
         lineChart.setCreateSymbols(true);
-        lineChart.setPrefHeight(750);
-        lineChart.setPrefWidth(700);
+        lineChart.setPrefHeight(650);
+        lineChart.setPrefWidth(600);
         xAxis.setLabel("Feet");
         yAxis.setLabel("Feet");
         lineChart.setTitle("Points");
@@ -135,16 +138,67 @@ public class PathSimulator extends Application {
             }
         );
 
+        // final Button deletePoint = new Button("Delete");
+        // deletePoint.setOnAction((ActionEvent e) -> {
+        //
+        //         // Remove on element
+        //     }
+        // );
+
+        // TODO: Automatically bind x and y values in plot to chart
+        final Button plotPoints = new Button("Plot");
+        plotPoints.setOnAction((ActionEvent e) -> {
+                clearPath();
+                XYChart.Series pointSeries = new XYChart.Series();
+                for (Point p : data) {
+                    pointSeries.getData()
+                        .add(new XYChart.Data(p.getX(), p.getY()));
+                }
+                lineChart.getData().addAll(pointSeries);
+            }
+        );
+
+        final Button addPoint = new Button("Add");
+        addPoint.setOnAction((ActionEvent e) -> {
+                data.add(new Point(Integer.parseInt(xinput.getText()), Integer.parseInt(yinput.getText()), data.size() + 1));
+                clearPath();
+                XYChart.Series pointSeries = new XYChart.Series();
+                for (Point p : data) {
+                    pointSeries.getData()
+                        .add(new XYChart.Data(p.getX(), p.getY()));
+                }
+                lineChart.getData().addAll(pointSeries);
+                xinput.setText("");
+                yinput.setText("");
+            }
+        );
+
+        TextField textField = new TextField();
+
+        TextFormatter<String> xformatter = new TextFormatter<String>( change -> {
+            change.setText(change.getText().replaceAll("[^-][^0-9]", ""));
+            return change;
+        });
+        TextFormatter<String> yformatter = new TextFormatter<String>( change -> {
+            change.setText(change.getText().replaceAll("[^-][^0-9]", ""));
+            return change;
+        });
+        xinput.setTextFormatter(xformatter);
+        xinput.setPrefWidth(80);
+        xinput.setPromptText("x value");
+        yinput.setTextFormatter(yformatter);
+        yinput.setPrefWidth(80);
+        yinput.setPromptText("y value");
+
         final Button generatePoints = new Button("Random");
         generatePoints.setOnAction((ActionEvent e) -> {
-                mPointList = PointGenerator
-                    .generate(numPointsSpinner.getValue(), X_MIN + 1, X_MAX - 1, Y_MIN + 1, Y_MAX - 1);
                 clearPath();
                 data.clear();
-                data.addAll(mPointList);
+                data.addAll(PointGenerator.generate(numPointsSpinner.getValue()
+                    , X_MIN + 1, X_MAX - 1, Y_MIN + 1, Y_MAX - 1));
 
                 XYChart.Series pointSeries = new XYChart.Series();
-                for (Point p : mPointList) {
+                for (Point p : data) {
                     pointSeries.getData()
                         .add(new XYChart.Data(p.getX(), p.getY()));
                 }
@@ -156,11 +210,11 @@ public class PathSimulator extends Application {
         calculatePath1.disableProperty().bind(Bindings.size(data).isEqualTo(0));
         calculatePath1.setOnAction((ActionEvent e) -> {
                 Stopwatch stopwatch = Stopwatch.createStarted();
-                SortAlgorithm mAlgorithm = new PermutationAlgorithm(mPointList);
+                SortAlgorithm mAlgorithm = new PermutationAlgorithm(data);
                 Path bestPath = mAlgorithm.bestPath();
                 stopwatch.stop();
                 totalTime.setText(String.format("%6.3fs", stopwatch.elapsedSeconds()));
-                totalPathChecked.setText(String.format("%9d", mAlgorithm.getNumPath()));
+                totalPathChecked.setText(NumberFormat.getInstance().format(mAlgorithm.getNumPath()));
 
                 List<Point> mBestPointList = bestPath.getPoints();
 
@@ -190,12 +244,12 @@ public class PathSimulator extends Application {
         calculatePath2.setOnAction((ActionEvent e) -> {
 
                 Stopwatch stopwatch = Stopwatch.createStarted();
-                SortAlgorithm mAlgorithm = new ClosestPointPermutationAlgorithm(mPointList,
+                SortAlgorithm mAlgorithm = new ClosestPointPermutationAlgorithm(data,
                     numBranchSpinner.getValue(), numIterationSpinner.getValue());
                 Path bestPath = mAlgorithm.bestPath();
                 stopwatch.stop();
                 totalTime.setText(String.format("%6.3fs", stopwatch.elapsedSeconds()));
-                totalPathChecked.setText(String.format("%9d", mAlgorithm.getNumPath()));
+                totalPathChecked.setText(NumberFormat.getInstance().format(mAlgorithm.getNumPath()));
 
                 List<Point> mBestPointList = bestPath.getPoints();
 
@@ -220,8 +274,8 @@ public class PathSimulator extends Application {
             }
         );
 
-        numBranchSpinner.setPrefWidth(100);
-        numIterationSpinner.setPrefWidth(100);
+        numBranchSpinner.setPrefWidth(70);
+        numIterationSpinner.setPrefWidth(70);
 
         List<Button> calcPathButtons = new ArrayList<Button>();
         calcPathButtons.add(calculatePath1);
@@ -229,7 +283,7 @@ public class PathSimulator extends Application {
 
         // Set table properties
         table.setEditable(true);
-        table.setPrefHeight(700);
+        table.setPrefHeight(500);
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         Callback<TableColumn<String,Integer>,TableCell<String,Integer>> cellFactory =
@@ -334,8 +388,12 @@ public class PathSimulator extends Application {
         );
         algInfoBar.setPadding(new Insets(10, 10, 10, 50));
 
+        pointAddBar.setSpacing(10);
+        pointAddBar.getChildren().addAll(xinput, yinput, addPoint);
+        pointAddBar.setPadding(new Insets(10, 10, 10, 10));
+
         pointActBar.setSpacing(10);
-        pointActBar.getChildren().addAll(clearPoints);
+        pointActBar.getChildren().addAll(clearPoints, plotPoints);
         pointActBar.setPadding(new Insets(10, 10, 10, 10));
 
         pointGenBar.setSpacing(10);
@@ -343,7 +401,7 @@ public class PathSimulator extends Application {
         pointGenBar.setPadding(new Insets(10, 10, 10, 10));
 
         graphModule.getChildren().addAll(lineChart, graphInfoBar, algInfoBar, graphBtnBar);
-        pointModule.getChildren().addAll(table, pointActBar, pointGenBar);
+        pointModule.getChildren().addAll(table, pointAddBar, pointActBar, pointGenBar);
 
         root.getChildren().addAll(graphModule, pointModule);
 
