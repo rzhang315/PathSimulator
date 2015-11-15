@@ -1,7 +1,8 @@
 <project name="PathSimulator" default="default" basedir="."
 	xmlns:fx="javafx:com.sun.javafx.tools.ant">
 
-    <property name="JAVA_HOME" value="C:\Program Files (x86)\Java\jdk1.8.0_40"/>
+    <property name="JAVA_HOME_WINDOWS" value="C:\Program Files (x86)\Java\jdk1.8.0_40"/>
+    <property name="JAVA_HOME" value="/Library/Java/JavaVirtualMachines/jdk1.8.0_60.jdk/Contents/Home"/>
 
 	<description>
 		Create PathSimulator project (JAR)
@@ -69,5 +70,4 @@
       debug="on">
     </javac>
   </target>
-
 </project>
