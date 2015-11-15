@@ -2,6 +2,7 @@
 	xmlns:fx="javafx:com.sun.javafx.tools.ant">
 
     <property name="JAVA_HOME" value="C:\Program Files (x86)\Java\jdk1.8.0_40"/>
+    <property name="JAVA_HOME_MAC" value="/Library/Java/JavaVirtualMachines/jdk1.8.0_60.jdk/Contents/Home"/>
 
 	<description>
 		Create PathSimulator project (JAR)
@@ -68,6 +69,10 @@
       source="1.8"
       debug="on">
     </javac>
+  </target>
+
+  <target name="run">
+    <java jar="dist/${ant.project.name}.jar" fork="true"/>
   </target>
 
 </project>
