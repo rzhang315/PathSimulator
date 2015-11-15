@@ -47,6 +47,11 @@ import javafx.util.Callback;
 import javafx.util.StringConverter;
 import javafx.beans.binding.Bindings;
 
+/*
+ * Java FX module that allows for user input and generation of points
+ * @author Kairi Kozuma
+ * @version 1.0
+ */
 public class PointTable {
 
     private static final int X_MAX = 5;
@@ -70,6 +75,11 @@ public class PointTable {
     private final ObservableList<Point> data;
     private final PathGraph graphModule;
 
+    /**
+     * Construct new PointTable module
+     * @param   data of Points
+     * @param   graphModule to plot the points
+     */
     public PointTable(ObservableList<Point> data, PathGraph graphModule) {
 
         this.data = data;
@@ -140,25 +150,10 @@ public class PointTable {
         table.setPrefHeight(500);
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        Callback<TableColumn<String,Integer>,TableCell<String,Integer>> cellFactory =
-            TextFieldTableCell.forTableColumn(new StringConverter<Integer>(){
-                    @Override
-                    public String toString(Integer object) {
-                        return object.toString();
-                    }
-
-                    @Override
-                    public Integer fromString(String string) {
-                        return Integer.parseInt(string);
-                }
-            });
-
-
         TableColumn xCol = new TableColumn("X");
         xCol.setMinWidth(30);
         xCol.setCellValueFactory(
                 new PropertyValueFactory<Point, Integer>("x"));
-        xCol.setCellFactory(cellFactory);
         xCol.setOnEditCommit(
             new EventHandler<CellEditEvent<Point, Integer>>() {
                 @Override
@@ -175,7 +170,6 @@ public class PointTable {
         yCol.setMinWidth(30);
         yCol.setCellValueFactory(
                 new PropertyValueFactory<Point, Integer>("y"));
-        yCol.setCellFactory(cellFactory);
         yCol.setOnEditCommit(
             new EventHandler<CellEditEvent<Point, Integer>>() {
                 @Override
@@ -192,7 +186,6 @@ public class PointTable {
         indexCol.setMinWidth(30);
         indexCol.setCellValueFactory(
                 new PropertyValueFactory<Point, Integer>("index"));
-        indexCol.setCellFactory(cellFactory);
         indexCol.setOnEditCommit(
             new EventHandler<CellEditEvent<Point, Integer>>() {
                 @Override
@@ -227,6 +220,10 @@ public class PointTable {
         root.getChildren().addAll(table, pointAddBar, pointActBar, pointGenBar);
     }
 
+    /**
+     * Get the root view for the module
+     * @return VBox root view
+     */
     public VBox getView() {
         return root;
     }

@@ -2,6 +2,7 @@ package util;
 
 import model.Path;
 import model.Point;
+import model.PointReal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -19,22 +20,40 @@ public class LocationDataParser {
     private static final double CONVERSION_FACTOR = 1 / 290.29;
 
     /**
-     * Parse experimental data from raw location file
-     * @param  fileName String file name
+     * Parse experimental data from string text
+     * @param  dataString String of data to parse
      * @return List<Point> list of points
      */
-    public static List<List<Double>> parsePathFromFile(String fileName) {
-        // List<Point> pointList = new ArrayList<Point>();
-        List<List<Double>> pointList = new ArrayList<List<Double>>();
+    public static List<PointReal> parseDataFromString(String dataString) {
+        List<PointReal> pointList = new ArrayList<PointReal>();
+        try {
+            for (String line : dataString.split("\\n")) {
+                PointReal point = parseLine(line);
+                if (point != null) {
+                    pointList.add(point);
+                }
+            }
+        } catch (NumberFormatException e) {
+            System.out.println(e);
+            return null;
+        }
+        return pointList;
+    }
+
+    /**
+     * Parse experimental data from raw location file
+     * @param  fileName String file name
+     * @return List<PointReal> list of points
+     */
+    public static List<PointReal> parseDataFromFile(String fileName) {
+        List<PointReal> pointList = new ArrayList<PointReal>();
         try {
             Scanner mFileScanner = new Scanner(new File(fileName));
             while(mFileScanner.hasNext()) {
-                List<Double> parsedNumsList = new ArrayList<Double>();
-                double[] parsedNums = parseLine(mFileScanner.nextLine());
-                for (double d : parsedNums) {
-                    parsedNumsList.add(d);
+                PointReal point = parseLine(mFileScanner.nextLine());
+                if (point != null) {
+                    pointList.add(point);
                 }
-                pointList.add(parsedNumsList);
             }
         } catch (FileNotFoundException e) {
             System.out.println(e);
@@ -46,8 +65,12 @@ public class LocationDataParser {
         return pointList;
     }
 
-    // Parse the line and return array of x, y, and index
-    private static double[] parseLine(String line) throws NumberFormatException {
+    /**
+     * Parse a line of raw data and return a PointReal
+     * @param  line of String to parse
+     * @return      PointReal of location if valid
+     */
+    private static PointReal parseLine(String line) throws NumberFormatException {
         // If line does not have length 10, robot did not declare destination
         if (line.length() != 10) {
             return null;
@@ -67,14 +90,7 @@ public class LocationDataParser {
             // Index can be left unsigned as it is always nonnegative
             int index = Integer.parseInt(indStr, 16);
 
-            return new double[] {xvalFeet, yvalFeet, index};
+            return new PointReal(xvalFeet, yvalFeet, index);
         }
     }
-
-    // private static void main(String args[]) {
-    //     List<List<Double>> mList = parsePathFromFile(args[0]);
-    //     for (List<Double> l : mList) {
-    //         System.out.println(l);
-    //     }
-    // }
 }

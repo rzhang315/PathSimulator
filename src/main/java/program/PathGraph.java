@@ -8,8 +8,6 @@ import algorithm.ClosestPointPermutationAlgorithm;
 import util.Stopwatch;
 import util.PointGenerator;
 import java.text.NumberFormat;
-import javafx.application.Application;
-import javafx.scene.Scene;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
@@ -52,7 +50,56 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 import javafx.beans.binding.Bindings;
+import util.PointGenerator;
+import java.text.NumberFormat;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import java.util.Scanner;
+import java.util.List;
+import java.util.ArrayList;
+import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.stage.Stage;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn.CellEditEvent;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.control.Spinner;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import javafx.util.Callback;
+import javafx.util.StringConverter;
+import javafx.beans.binding.Bindings;
 
+/*
+ * Java FX module that allows for visualization and sorting of points
+ * @author Kairi Kozuma
+ * @version 1.0
+ */
 public class PathGraph {
     private static final int X_MAX = 5;
     private static final int X_MIN = -5;
@@ -95,6 +142,10 @@ public class PathGraph {
 
     private final ObservableList<Point> data;
 
+    /**
+     * Construct PathGraph module
+     * @param  data ObservableList of Point
+     */
     public PathGraph(ObservableList<Point> data) {
         this.data = data;
 
@@ -162,7 +213,9 @@ public class PathGraph {
             .addAll(lineChart, graphInfoBar, algInfoBar, graphBtnBar);
     }
 
-
+    /**
+     * Clear the points on the graph
+     */
     public void clear() {
         while(lineChart.getData().size() > 0) {
             lineChart.getData().remove(0);
@@ -172,6 +225,9 @@ public class PathGraph {
         totalAngleMin.setText("             °");
     }
 
+    /**
+     * Update the points on the graph
+     */
     public void update() {
         clear();
         XYChart.Series pointSeries = new XYChart.Series();
@@ -182,10 +238,18 @@ public class PathGraph {
         lineChart.getData().addAll(pointSeries);
     }
 
+    /**
+     * Get the root view of the module
+     * @return VBox root view
+     */
     public VBox getView() {
         return root;
     }
 
+    /**
+     * Plot the points given in a path
+     * @param mBestPointList list of points to plot in a path
+     */
     private void plotPath(List<Point> mBestPointList) {
         data.clear();
         data.addAll(mBestPointList);
@@ -203,6 +267,10 @@ public class PathGraph {
         lineChart.getData().addAll(pointSeries);
     }
 
+    /**
+     * Use the sort algorithm to sort points and update data when finished
+     * @param mAlgorithm algorithm used to sort points
+     */
     private void startAlgorithm(SortAlgorithm mAlgorithm) {
         Stopwatch stopwatch = Stopwatch.createStarted();
         Path bestPath = mAlgorithm.bestPath();

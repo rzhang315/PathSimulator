@@ -48,14 +48,15 @@ import javafx.util.StringConverter;
 import javafx.beans.binding.Bindings;
 
 /**
- * Java FX class that plots best path
+ * Java FX application that plots best path
  * @author Kairi Kozuma
- * @version 1.3
+ * @version 1.4
  */
 public class PathSimulator extends Application {
 
     private PathGraph graphModule;
     private PointTable pointModule;
+    private DataInputConverter converterModule;
 
     private final ObservableList<Point> data = FXCollections.observableArrayList();
 
@@ -66,8 +67,9 @@ public class PathSimulator extends Application {
 
         graphModule = new PathGraph(data);
         pointModule = new PointTable(data, graphModule);
+        converterModule = new DataInputConverter(data);
 
-        root.getChildren().addAll(graphModule.getView(), pointModule.getView());
+        root.getChildren().addAll(graphModule.getView(), pointModule.getView(), converterModule.getView());
 
         final Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass()
