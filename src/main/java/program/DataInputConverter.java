@@ -3,55 +3,24 @@ package program;
 import model.Point;
 import model.PointReal;
 import util.LocationDataParser;
-import javafx.collections.ObservableList;
-import javafx.scene.control.TextArea;
-import model.Path;
-import model.Point;
-import util.PointGenerator;
-import java.text.NumberFormat;
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import java.util.Scanner;
 import java.util.List;
-import java.util.ArrayList;
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
-import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.effect.DropShadow;
+import javafx.collections.ObservableList;
+import javafx.collections.FXCollections;
+import javafx.scene.Node;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.stage.Stage;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.geometry.Insets;
-import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn.CellEditEvent;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextFormatter;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.control.Spinner;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
-import javafx.stage.Stage;
-import javafx.util.Callback;
-import javafx.util.StringConverter;
+import javafx.scene.control.Button;
 import javafx.beans.binding.Bindings;
-
+import javafx.geometry.Insets;
+import javafx.util.Callback;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.control.TableColumn.CellDataFeatures;
 /*
  * Java FX module that allows for conversion of raw location data
  * @author Kairi Kozuma
@@ -62,8 +31,9 @@ public class DataInputConverter {
     private final TextArea dataInput = new TextArea();
 
     private final Button parseDataBtn = new Button("Parse");
+    private final VBox tableBox = new VBox();
 
-    private final HBox root = new HBox();
+    private final VBox root = new VBox();
     private final TableView<PointReal> table = new TableView<PointReal>();
 
     private final ObservableList<Point> dataTheor;
@@ -76,44 +46,60 @@ public class DataInputConverter {
                 dataExper.clear();
                 List<PointReal> mPoints = LocationDataParser
                     .parseDataFromString(dataInput.getText());
-                    System.out.println(mPoints);
                 dataExper.addAll(mPoints);
             }
         );
 
         // Set text area properties
-        dataInput.setPrefHeight(500);
-        dataInput.setPrefWidth(200);
+        dataInput.setPrefHeight(100);
+        dataInput.setPrefWidth(300);
 
         // Set table properties
         table.setEditable(false);
-        table.setPrefHeight(500);
+        table.setPrefWidth(300);
+        table.setPrefHeight(600);
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         TableColumn xCol = new TableColumn("X");
         xCol.setMinWidth(30);
-        xCol.setCellValueFactory(
-                new PropertyValueFactory<PointReal, Double>("x"));
+        xCol.setCellValueFactory(new Callback<CellDataFeatures<PointReal, String>,
+            ObservableValue<String>>() {
+                public ObservableValue<String> call(CellDataFeatures<PointReal, String> p) {
+                    return Bindings.format("%.3f", p.getValue().getX());
+            }
+        });
+
 
         TableColumn yCol = new TableColumn("Y");
         yCol.setMinWidth(30);
-        yCol.setCellValueFactory(
-                new PropertyValueFactory<PointReal, Double>("y"));
+        yCol.setCellValueFactory(new Callback<CellDataFeatures<PointReal, String>,
+            ObservableValue<String>>() {
+                public ObservableValue<String> call(CellDataFeatures<PointReal, String> p) {
+                    return Bindings.format("%.3f", p.getValue().getY());
+            }
+        });
 
         TableColumn indexCol = new TableColumn("Index");
         indexCol.setMinWidth(30);
-        indexCol.setCellValueFactory(
-                new PropertyValueFactory<PointReal, Integer>("index"));
+        indexCol.setCellValueFactory(new Callback<CellDataFeatures<PointReal, String>,
+            ObservableValue<String>>() {
+                public ObservableValue<String> call(CellDataFeatures<PointReal, String> p) {
+                    return Bindings.format("%d", p.getValue().getIndex());
+            }
+        });
 
         table.setItems(dataExper);
         table.getColumns().addAll(xCol, yCol, indexCol);
 
-        root.setSpacing(5);
-        root.setPadding(new Insets(10, 10, 10, 10));
+        // Organize layouts
+        tableBox.setSpacing(5);
+        tableBox.setPadding(new Insets(10, 10, 10, 10));
+        tableBox.getChildren().addAll(table);
+
         root.getChildren().addAll(table, parseDataBtn, dataInput);
     }
 
-    public HBox getView() {
+    public Node getView() {
         return root;
     }
 }

@@ -52,7 +52,7 @@ public class PointReal {
      * Return the index label of the point
      * @return index value of point
      */
-    public double getIndex() {
+    public int getIndex() {
         return index;
     }
 

@@ -3,49 +3,21 @@ package program;
 import model.Path;
 import model.Point;
 import util.PointGenerator;
-import java.text.NumberFormat;
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import java.util.Scanner;
-import java.util.List;
-import java.util.ArrayList;
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
-import javafx.scene.Group;
-import javafx.scene.Scene;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.stage.Stage;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.geometry.Insets;
-import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.control.Spinner;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
-import javafx.stage.Stage;
-import javafx.util.Callback;
-import javafx.util.StringConverter;
-import javafx.beans.binding.Bindings;
+import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 
 /*
  * Java FX module that allows for user input and generation of points
@@ -68,7 +40,7 @@ public class PointTable {
     private final HBox pointAddBar = new HBox();
     private final HBox pointActBar = new HBox();
     private final HBox pointGenBar = new HBox();
-    private final VBox vTableBox = new VBox();
+    private final VBox tableBox = new VBox();
 
     private final VBox root = new VBox();
 
@@ -85,7 +57,6 @@ public class PointTable {
         this.data = data;
         this.graphModule = graphModule;
 
-        // TODO: make separate class for points and graph
         // TODO Delete individual points
 
         final Button clearPoints = new Button("Clear");
@@ -102,7 +73,6 @@ public class PointTable {
         //     }
         // );
 
-        // TODO: Automatically bind x and y values in plot to chart
         final Button plotPoints = new Button("Plot");
         plotPoints.setOnAction((ActionEvent e) -> {
                 graphModule.update();
@@ -117,8 +87,6 @@ public class PointTable {
                 yinput.setText("");
             }
         );
-
-        TextField textField = new TextField();
 
         TextFormatter<String> xformatter = new TextFormatter<String>( change -> {
             change.setText(change.getText().replaceAll("[^-][^0-9]", ""));
@@ -144,10 +112,10 @@ public class PointTable {
             }
         );
 
-
         // Set table properties
         table.setEditable(true);
-        table.setPrefHeight(500);
+        table.setPrefWidth(300);
+        table.setPrefHeight(600);
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         TableColumn xCol = new TableColumn("X");
@@ -165,11 +133,9 @@ public class PointTable {
              }
         );
 
-
         TableColumn yCol = new TableColumn("Y");
         yCol.setMinWidth(30);
-        yCol.setCellValueFactory(
-                new PropertyValueFactory<Point, Integer>("y"));
+        yCol.setCellValueFactory(new PropertyValueFactory<Point, Integer>("y"));
         yCol.setOnEditCommit(
             new EventHandler<CellEditEvent<Point, Integer>>() {
                 @Override
@@ -180,7 +146,6 @@ public class PointTable {
                 }
              }
         );
-
 
         TableColumn indexCol = new TableColumn("Index");
         indexCol.setMinWidth(30);
@@ -201,9 +166,9 @@ public class PointTable {
         table.getColumns().addAll(xCol, yCol, indexCol);
 
         // Organize layouts
-        vTableBox.setSpacing(5);
-        vTableBox.setPadding(new Insets(10, 10, 10, 10));
-        vTableBox.getChildren().addAll(table);
+        tableBox.setSpacing(5);
+        tableBox.setPadding(new Insets(10, 10, 10, 10));
+        tableBox.getChildren().addAll(table);
 
         pointAddBar.setSpacing(10);
         pointAddBar.getChildren().addAll(xinput, yinput, addPoint);
@@ -224,7 +189,7 @@ public class PointTable {
      * Get the root view for the module
      * @return VBox root view
      */
-    public VBox getView() {
+    public Node getView() {
         return root;
     }
 }
