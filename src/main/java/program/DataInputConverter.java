@@ -2,6 +2,7 @@ package program;
 
 import model.Point;
 import model.PointReal;
+import util.PointExporter;
 import util.LocationDataParser;
 import java.util.List;
 import javafx.event.ActionEvent;
@@ -32,6 +33,7 @@ public class DataInputConverter {
 
     private final Button parseDataBtn = new Button("Parse");
     private final Button plotPointsBtn = new Button("Plot");
+    private final Button exportPointsBtn = new Button("Export");
     private final VBox tableBox = new VBox();
 
     private final VBox root = new VBox();
@@ -41,7 +43,10 @@ public class DataInputConverter {
 
     private final ObservableList<Point> dataTheor;
     private final ObservableList<PointReal> dataExper = FXCollections.observableArrayList();
+
     private final PathGraph graphModule;
+
+    // TODO: automatically detect point and calculate theoretical path
 
     public DataInputConverter(ObservableList<Point> dataTheoretical, PathGraph graphModule) {
         dataTheor = dataTheoretical;
@@ -56,7 +61,13 @@ public class DataInputConverter {
         );
 
         plotPointsBtn.setOnAction((ActionEvent e) -> {
+                graphModule.clearExperimental();
                 graphModule.plotPointsExperimental(dataExper);
+            }
+        );
+
+        exportPointsBtn.setOnAction((ActionEvent e) -> {
+                PointExporter.export("experimental_points", dataExper);
             }
         );
 
@@ -66,7 +77,7 @@ public class DataInputConverter {
 
         // Set table properties
         table.setEditable(false);
-        table.setPrefWidth(300);
+        table.setPrefWidth(400);
         table.setPrefHeight(600);
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
@@ -91,15 +102,20 @@ public class DataInputConverter {
 
         TableColumn indexCol = new TableColumn("Index");
         indexCol.setMinWidth(30);
-        indexCol.setCellValueFactory(new Callback<CellDataFeatures<PointReal, String>,
+        indexCol.setCellValueFactory(
+                new PropertyValueFactory<PointReal, Integer>("index"));
+
+        TableColumn errorCol = new TableColumn("Error");
+        errorCol.setMinWidth(30);
+        errorCol.setCellValueFactory(new Callback<CellDataFeatures<PointReal, String>,
             ObservableValue<String>>() {
                 public ObservableValue<String> call(CellDataFeatures<PointReal, String> p) {
-                    return Bindings.format("%d", p.getValue().getIndex());
+                    return Bindings.format("%.3f", p.getValue().getError());
             }
         });
 
         table.setItems(dataExper);
-        table.getColumns().addAll(xCol, yCol, indexCol);
+        table.getColumns().addAll(xCol, yCol, indexCol, errorCol);
 
         // Organize layouts
         tableBox.setSpacing(5);
@@ -107,7 +123,7 @@ public class DataInputConverter {
         tableBox.getChildren().addAll(table);
 
         dataActBar.setSpacing(10);
-        dataActBar.getChildren().addAll(parseDataBtn, plotPointsBtn);
+        dataActBar.getChildren().addAll(parseDataBtn, plotPointsBtn, exportPointsBtn);
         dataActBar.setPadding(new Insets(10, 10, 10, 10));
 
         root.getChildren().addAll(table, dataActBar, dataInput);

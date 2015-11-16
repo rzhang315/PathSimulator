@@ -10,6 +10,7 @@ public class PointReal {
     private double x;
     private double y;
     private int index;
+    private double error;
 
     /**
      * Constructs point with real coordinates
@@ -30,6 +31,14 @@ public class PointReal {
         x = x0;
         y = y0;
         index = i0;
+        error = 0.0;
+
+        if (index != -1) {
+            // Calculate error to closest integer point
+            int x_close = (int) Math.round(x);
+            int y_close = (int) Math.round(y);
+            error = Math.sqrt(Math.pow(x_close - x, 2) + Math.pow(y_close - y, 2));
+        }
     }
 
     /**
@@ -45,7 +54,7 @@ public class PointReal {
      * @return y value of point
      */
     public double getY() {
-        return  y;
+        return y;
     }
 
     /**
@@ -54,6 +63,14 @@ public class PointReal {
      */
     public int getIndex() {
         return index;
+    }
+
+    /**
+     * Return the error of the point
+     * @return error value of point
+     */
+    public double getError() {
+        return error;
     }
 
     /**
@@ -86,7 +103,7 @@ public class PointReal {
      */
     @Override
     public String toString() {
-        return String.format("%2d (%.2f,%.2f)", index, x, y);
+        return String.format("%2d (%.3f,%.3f) E: %.3f ", index, x, y, error);
     }
 
     /**

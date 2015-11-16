@@ -158,6 +158,29 @@ public class PathGraph {
     }
 
     /**
+     * Clear the experimental points
+     */
+    public void clearExperimental() {
+        clear("Experimental");
+    }
+
+    /**
+     * Clear best path
+     */
+    public void clearBest() {
+        clear("Best");
+    }
+
+    private void clear(String seriesName) {
+        XYChart.Series pointSeries = new XYChart.Series();
+        for(XYChart.Series series : lineChart.getData()) {
+            if(series.getName().equals(seriesName)) {
+                lineChart.getData().remove(series);
+            };
+        }
+    }
+
+    /**
      * Update the points on the graph
      */
     public void plotPoints() {
@@ -168,6 +191,7 @@ public class PathGraph {
                 .add(new XYChart.Data(p.getX(), p.getY()));
         }
         lineChart.getData().add(pointSeries);
+        pointSeries.setName("Points");
         pointSeries.getNode().setStyle("-fx-stroke: transparent; -fx-background-color: green, white;");
     }
 
@@ -181,6 +205,7 @@ public class PathGraph {
                 .add(new XYChart.Data(p.getX(), p.getY()));
         }
         lineChart.getData().add(pointSeries);
+        pointSeries.setName("Experimental");
         pointSeries.getNode().setStyle("-fx-stroke: green; -fx-background-color: green, white;");
     }
 
@@ -200,8 +225,8 @@ public class PathGraph {
 
         // Connect points in order that they were added
         lineChart.getData().clear();
+        pointSeries.setName("Best");
         lineChart.getData().add(pointSeries);
-
 
         pointSeries.getNode().setStyle("-fx-stroke: orange; -fx-background-color: orange, white;");
     }
