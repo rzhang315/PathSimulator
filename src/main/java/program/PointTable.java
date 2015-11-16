@@ -75,14 +75,14 @@ public class PointTable {
 
         final Button plotPoints = new Button("Plot");
         plotPoints.setOnAction((ActionEvent e) -> {
-                graphModule.update();
+                graphModule.plotPoints();
             }
         );
 
         final Button addPoint = new Button("Add");
         addPoint.setOnAction((ActionEvent e) -> {
                 data.add(new Point(Integer.parseInt(xinput.getText()), Integer.parseInt(yinput.getText()), data.size() + 1));
-                graphModule.update();
+                graphModule.plotPoints();
                 xinput.setText("");
                 yinput.setText("");
             }
@@ -108,7 +108,7 @@ public class PointTable {
                 data.clear();
                 data.addAll(PointGenerator.generate(numPointsSpinner.getValue()
                     , X_MIN + 1, X_MAX - 1, Y_MIN + 1, Y_MAX - 1));
-                graphModule.update();
+                graphModule.plotPoints();
             }
         );
 

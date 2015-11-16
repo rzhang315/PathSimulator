@@ -2,6 +2,7 @@ package program;
 
 import model.Path;
 import model.Point;
+import model.PointReal;
 import algorithm.SortAlgorithm;
 import algorithm.PermutationAlgorithm;
 import algorithm.ClosestPointPermutationAlgorithm;
@@ -16,6 +17,7 @@ import javafx.scene.control.Label;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
+import javafx.scene.chart.XYChart.Series;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.layout.HBox;
@@ -23,6 +25,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
 
@@ -148,9 +151,7 @@ public class PathGraph {
      * Clear the points on the graph
      */
     public void clear() {
-        while(lineChart.getData().size() > 0) {
-            lineChart.getData().remove(0);
-        }
+        lineChart.getData().clear();
         totalLength.setText("           ft");
         totalAngleMax.setText("             °");
         totalAngleMin.setText("             °");
@@ -159,22 +160,28 @@ public class PathGraph {
     /**
      * Update the points on the graph
      */
-    public void update() {
+    public void plotPoints() {
         clear();
         XYChart.Series pointSeries = new XYChart.Series();
         for (Point p : data) {
             pointSeries.getData()
                 .add(new XYChart.Data(p.getX(), p.getY()));
         }
-        lineChart.getData().addAll(pointSeries);
+        lineChart.getData().add(pointSeries);
+        pointSeries.getNode().setStyle("-fx-stroke: transparent; -fx-background-color: green, white;");
     }
 
     /**
-     * Get the root view of the module
-     * @return VBox root view
+     * Update the points on the graph
      */
-    public Node getView() {
-        return root;
+    public void plotPointsExperimental(List<PointReal> points) {
+        XYChart.Series pointSeries = new XYChart.Series();
+        for (PointReal p : points) {
+            pointSeries.getData()
+                .add(new XYChart.Data(p.getX(), p.getY()));
+        }
+        lineChart.getData().add(pointSeries);
+        pointSeries.getNode().setStyle("-fx-stroke: green; -fx-background-color: green, white;");
     }
 
     /**
@@ -192,10 +199,19 @@ public class PathGraph {
         }
 
         // Connect points in order that they were added
-        if(lineChart.getData().size() > 1) {
-            lineChart.getData().remove(lineChart.getData().size() - 1);
-        }
-        lineChart.getData().addAll(pointSeries);
+        lineChart.getData().clear();
+        lineChart.getData().add(pointSeries);
+
+
+        pointSeries.getNode().setStyle("-fx-stroke: orange; -fx-background-color: orange, white;");
+    }
+
+    /**
+     * Get the root view of the module
+     * @return VBox root view
+     */
+    public Node getView() {
+        return root;
     }
 
     /**

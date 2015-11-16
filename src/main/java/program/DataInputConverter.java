@@ -31,22 +31,32 @@ public class DataInputConverter {
     private final TextArea dataInput = new TextArea();
 
     private final Button parseDataBtn = new Button("Parse");
+    private final Button plotPointsBtn = new Button("Plot");
     private final VBox tableBox = new VBox();
 
     private final VBox root = new VBox();
+
+    private final HBox dataActBar = new HBox();
     private final TableView<PointReal> table = new TableView<PointReal>();
 
     private final ObservableList<Point> dataTheor;
     private final ObservableList<PointReal> dataExper = FXCollections.observableArrayList();
+    private final PathGraph graphModule;
 
-    public DataInputConverter(ObservableList<Point> data) {
-        dataTheor = data;
+    public DataInputConverter(ObservableList<Point> dataTheoretical, PathGraph graphModule) {
+        dataTheor = dataTheoretical;
+        this.graphModule = graphModule;
 
         parseDataBtn.setOnAction((ActionEvent e) -> {
                 dataExper.clear();
                 List<PointReal> mPoints = LocationDataParser
-                    .parseDataFromString(dataInput.getText());
+                    .parseDataFromString(dataInput.getText(), true);
                 dataExper.addAll(mPoints);
+            }
+        );
+
+        plotPointsBtn.setOnAction((ActionEvent e) -> {
+                graphModule.plotPointsExperimental(dataExper);
             }
         );
 
@@ -96,7 +106,11 @@ public class DataInputConverter {
         tableBox.setPadding(new Insets(10, 10, 10, 10));
         tableBox.getChildren().addAll(table);
 
-        root.getChildren().addAll(table, parseDataBtn, dataInput);
+        dataActBar.setSpacing(10);
+        dataActBar.getChildren().addAll(parseDataBtn, plotPointsBtn);
+        dataActBar.setPadding(new Insets(10, 10, 10, 10));
+
+        root.getChildren().addAll(table, dataActBar, dataInput);
     }
 
     public Node getView() {

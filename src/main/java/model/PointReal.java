@@ -99,7 +99,8 @@ public class PointReal {
         if (this == null) {return true;}
         if (!(o instanceof Point)) {return false;}
         PointReal p = (PointReal) o;
-        return Math.abs(this.getX() - p.getX()) < 1e-6 && Math.abs(this.getY() - p.getY()) < 1e-6;
+        return Math.abs(this.getX() - p.getX()) < 1e-6
+            && Math.abs(this.getY() - p.getY()) < 1e-6;
     }
 
     /**

@@ -28,7 +28,7 @@ public class PathSimulator extends Application {
 
         graphModule = new PathGraph(data);
         pointModule = new PointTable(data, graphModule);
-        converterModule = new DataInputConverter(data);
+        converterModule = new DataInputConverter(data, graphModule);
 
         root.getChildren().addAll(graphModule.getView(), pointModule.getView(), converterModule.getView());
 
