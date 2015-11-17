@@ -39,11 +39,10 @@ public class ClosestPointPermutationAlgorithm extends PermutationAlgorithm {
     @Override
     public Path bestPath() {
         closestPointThenPermutate();
-        return shortestPath;
+        return getShortestPath();
     }
 
     private void closestPointThenPermutate() {
-
         Point origin = new Point(0,0,0);
         List<Point> head = new ArrayList<Point>();
         head.add(origin);

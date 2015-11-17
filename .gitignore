@@ -3,6 +3,7 @@
 *.jnlp
 *.jar
 *.class
+*.txt
 
 /build
 

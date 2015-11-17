@@ -254,6 +254,7 @@ public class PathGraph {
         totalLength.setText(String.format("%6.3fft", bestPath.length()));
         totalAngleMax.setText(String.format("%7.3f°", bestPath.angle()));
         totalAngleMin.setText(String.format("%7.3f°", bestPath.angleSmallest()));
+        clearBestPath();
         List<Point> mBestPointList = bestPath.getPoints();
         plotPath(mBestPointList);
     }

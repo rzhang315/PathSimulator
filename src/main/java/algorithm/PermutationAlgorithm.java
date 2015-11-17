@@ -28,6 +28,15 @@ public class PermutationAlgorithm extends SortAlgorithm {
     @Override
     public Path bestPath() {
         permutate();
+        return getShortestPath();
+    }
+
+    protected Path getShortestPath() {
+        // Check if origin is first point, include it if it isn't
+        // in the case if path is already the shortest
+        if (!shortestPath.getPoints().get(0).equals(Point.ORIGIN)) {
+            shortestPath.getPoints().add(0, Point.ORIGIN);
+        }
         return shortestPath;
     }
 
@@ -39,7 +48,7 @@ public class PermutationAlgorithm extends SortAlgorithm {
         int n = mPointsEnd.size();
         if (n == 0) {
             List<Point> mPoints = new ArrayList<Point>(mPointsBegin);
-            mPoints.add(0, Path.originPoint);
+            mPoints.add(0, Point.ORIGIN);
             Path mPath = new Path(mPoints);
             double pathLength = mPath.length();
             if (shortestPathLength > pathLength) {

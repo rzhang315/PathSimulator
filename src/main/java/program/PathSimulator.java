@@ -33,8 +33,8 @@ public class PathSimulator extends Application {
         root.getChildren().addAll(graphModule.getView(), pointModule.getView(), converterModule.getView());
 
         final Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass()
-            .getResource("chart.css").toExternalForm());
+        // scene.getStylesheets().add(getClass()
+            // .getResource("chart.css").toExternalForm());
         stage.setScene(scene);
         stage.setTitle("Path");
         stage.show();

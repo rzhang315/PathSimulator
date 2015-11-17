@@ -6,6 +6,10 @@ package model;
  * @version 1.0
  */
 public class Point {
+
+    // Initial point
+    public static final Point ORIGIN = new Point(0, 0, 0);
+
     // x and y values of point, with index
     private int x;
     private int y;

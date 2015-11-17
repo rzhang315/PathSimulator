@@ -17,9 +17,6 @@ public class Path implements Comparable<Path> {
     // Angle needed to turn to first point
     double firstTurnAngle = 0.0;
 
-    // Initial point
-    public static final Point originPoint = new Point(0, 0, 0);
-
     /**
      * Construct new Path from list of points
      * @param  pList list of points
