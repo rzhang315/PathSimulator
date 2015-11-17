@@ -73,12 +73,6 @@ public class PointTable {
         //     }
         // );
 
-        final Button plotPoints = new Button("Plot");
-        plotPoints.setOnAction((ActionEvent e) -> {
-                graphModule.plotPoints();
-            }
-        );
-
         final Button addPoint = new Button("Add");
         addPoint.setOnAction((ActionEvent e) -> {
                 data.add(new Point(Integer.parseInt(xinput.getText()), Integer.parseInt(yinput.getText()), data.size() + 1));
@@ -175,11 +169,11 @@ public class PointTable {
         pointAddBar.setPadding(new Insets(10, 10, 10, 10));
 
         pointActBar.setSpacing(10);
-        pointActBar.getChildren().addAll(clearPoints, plotPoints);
+        pointActBar.getChildren().addAll();
         pointActBar.setPadding(new Insets(10, 10, 10, 10));
 
         pointGenBar.setSpacing(10);
-        pointGenBar.getChildren().addAll(numPointsSpinner, generatePoints);
+        pointGenBar.getChildren().addAll(numPointsSpinner, generatePoints, clearPoints);
         pointGenBar.setPadding(new Insets(10, 10, 10, 10));
 
         root.getChildren().addAll(table, pointAddBar, pointActBar, pointGenBar);

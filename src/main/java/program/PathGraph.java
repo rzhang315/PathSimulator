@@ -9,6 +9,7 @@ import algorithm.ClosestPointPermutationAlgorithm;
 import util.Stopwatch;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.text.NumberFormat;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -158,6 +159,13 @@ public class PathGraph {
     }
 
     /**
+     * Clear points
+     */
+    public void clearPoints() {
+        clear("Points");
+    }
+
+    /**
      * Clear the experimental points
      */
     public void clearExperimental() {
@@ -167,15 +175,17 @@ public class PathGraph {
     /**
      * Clear best path
      */
-    public void clearBest() {
-        clear("Best");
+    public void clearBestPath() {
+        clear("BestPath");
     }
 
     private void clear(String seriesName) {
         XYChart.Series pointSeries = new XYChart.Series();
-        for(XYChart.Series series : lineChart.getData()) {
+        Iterator<XYChart.Series<Number,Number>> mIterator = lineChart.getData().iterator();
+        while (mIterator.hasNext()) {
+            XYChart.Series series = mIterator.next();
             if(series.getName().equals(seriesName)) {
-                lineChart.getData().remove(series);
+                mIterator.remove();
             };
         }
     }
@@ -224,19 +234,9 @@ public class PathGraph {
         }
 
         // Connect points in order that they were added
-        lineChart.getData().clear();
-        pointSeries.setName("Best");
+        pointSeries.setName("BestPath");
         lineChart.getData().add(pointSeries);
-
         pointSeries.getNode().setStyle("-fx-stroke: orange; -fx-background-color: orange, white;");
-    }
-
-    /**
-     * Get the root view of the module
-     * @return VBox root view
-     */
-    public Node getView() {
-        return root;
     }
 
     /**
@@ -256,5 +256,13 @@ public class PathGraph {
         totalAngleMin.setText(String.format("%7.3f°", bestPath.angleSmallest()));
         List<Point> mBestPointList = bestPath.getPoints();
         plotPath(mBestPointList);
+    }
+
+    /**
+     * Get the root view of the module
+     * @return VBox root view
+     */
+    public Node getView() {
+        return root;
     }
 }

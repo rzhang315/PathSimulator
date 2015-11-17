@@ -5,6 +5,7 @@ import model.PointReal;
 import util.PointExporter;
 import util.LocationDataParser;
 import java.util.List;
+import java.util.ArrayList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.collections.ObservableList;
@@ -32,8 +33,10 @@ public class DataInputConverter {
     private final TextArea dataInput = new TextArea();
 
     private final Button parseDataBtn = new Button("Parse");
-    private final Button plotPointsBtn = new Button("Plot");
+    private final Button showAllBtn = new Button("Show All");
+    private final Button estPtsBtn = new Button("Estimate");
     private final Button exportPointsBtn = new Button("Export");
+
     private final VBox tableBox = new VBox();
 
     private final VBox root = new VBox();
@@ -43,31 +46,54 @@ public class DataInputConverter {
 
     private final ObservableList<Point> dataTheor;
     private final ObservableList<PointReal> dataExper = FXCollections.observableArrayList();
+    private final ObservableList<PointReal> dataExperAll = FXCollections.observableArrayList();
 
     private final PathGraph graphModule;
 
     // TODO: automatically detect point and calculate theoretical path
 
-    public DataInputConverter(ObservableList<Point> dataTheoretical, PathGraph graphModule) {
-        dataTheor = dataTheoretical;
+    public DataInputConverter(ObservableList<Point> dataTheor, PathGraph graphModule) {
+        this.dataTheor = dataTheor;
         this.graphModule = graphModule;
 
         parseDataBtn.setOnAction((ActionEvent e) -> {
+                // Clear points
                 dataExper.clear();
-                List<PointReal> mPoints = LocationDataParser
-                    .parseDataFromString(dataInput.getText(), true);
-                dataExper.addAll(mPoints);
-            }
-        );
+                dataExperAll.clear();
 
-        plotPointsBtn.setOnAction((ActionEvent e) -> {
+                // Parse data
+                dataExper.addAll(LocationDataParser
+                    .parseDataFromString(dataInput.getText(), false));
+                dataExperAll.addAll(LocationDataParser
+                    .parseDataFromString(dataInput.getText(), true));
+
+                // Plot data
                 graphModule.clearExperimental();
-                graphModule.plotPointsExperimental(dataExper);
+                graphModule.plotPointsExperimental(dataExperAll);
+
             }
         );
 
         exportPointsBtn.setOnAction((ActionEvent e) -> {
                 PointExporter.export("experimental_points", dataExper);
+            }
+        );
+
+        // Estimate theoretical points and path
+        estPtsBtn.setOnAction((ActionEvent e) -> {
+                dataTheor.clear();
+                dataTheor.addAll(estimate(dataExper));
+            }
+        );
+
+        showAllBtn.setOnAction((ActionEvent e) -> {
+                if (showAllBtn.getText().equals("Show All")) {
+                    table.setItems(dataExperAll);
+                    showAllBtn.setText("Show Dest");
+                } else {
+                    table.setItems(dataExper);
+                    showAllBtn.setText("Show All");
+                }
             }
         );
 
@@ -123,10 +149,18 @@ public class DataInputConverter {
         tableBox.getChildren().addAll(table);
 
         dataActBar.setSpacing(10);
-        dataActBar.getChildren().addAll(parseDataBtn, plotPointsBtn, exportPointsBtn);
+        dataActBar.getChildren().addAll(parseDataBtn, exportPointsBtn, showAllBtn, estPtsBtn);
         dataActBar.setPadding(new Insets(10, 10, 10, 10));
 
         root.getChildren().addAll(table, dataActBar, dataInput);
+    }
+
+    private List<Point> estimate(List<PointReal> points) {
+        List<Point> estPoints = new ArrayList<Point>(points.size());
+        for (PointReal p : points) {
+            estPoints.add(p.nearest());
+        }
+        return estPoints;
     }
 
     public Node getView() {

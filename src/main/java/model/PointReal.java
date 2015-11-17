@@ -97,6 +97,10 @@ public class PointReal {
         this.index = index;
     }
 
+    public Point nearest() {
+        return new Point((int) Math.round(x), (int) Math.round(y), index);
+    }
+
     /**
      * Return string representation of point
      * @return x and y values of point
