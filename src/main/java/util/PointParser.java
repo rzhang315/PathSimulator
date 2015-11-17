@@ -15,13 +15,40 @@ import java.io.FileNotFoundException;
  * @author Kairi Kozuma
  * @version 1.0
  */
-public class PathParser {
+public class PointParser {
+    /**
+     * Parse a list of points from string
+     * @param  rawString String of point list to parse
+     * @return           List<Point> parsed from String
+     */
+    public static List<Point> parsePointsFromString(String rawString) {
+        List<Point> pointList = new ArrayList<Point>();
+        try {
+            int i = 1;
+            for (String line : rawString.split("\\n")) {
+                int[] pointData = parseLine(line);
+                if (pointData.length == 2) {
+                    pointList.add(new Point(pointData[0], pointData[1], i));
+                } else if (pointData.length == 3) {
+                    pointList.add(new Point(pointData[0], pointData[1], pointData[2]));
+                } else {
+                    // throw exception
+                }
+                i++;
+            }
+        } catch (NumberFormatException e) {
+            System.out.println(e);
+            return null;
+        }
+        return pointList;
+    }
+
     /**
      * Parse a single path from a filename
      * @param  fileName String file name
      * @return          Path object parsed from the file
      */
-    public static Path parsePathFromFile(String fileName) {
+    public static List<Point> parsePoingFromFile(String fileName) {
         List<Point> pointList = new ArrayList<Point>();
         try {
             Scanner mFileScanner = new Scanner(new File(fileName));
@@ -36,7 +63,7 @@ public class PathParser {
             System.out.println(e);
             return null;
         }
-        return new Path(pointList);
+        return pointList;
     }
 
     /**

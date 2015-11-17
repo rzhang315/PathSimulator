@@ -3,6 +3,7 @@ package program;
 import model.Path;
 import model.Point;
 import util.PointGenerator;
+import util.PointParser;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
@@ -16,6 +17,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.Spinner;
+import javafx.scene.control.TextArea;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 
@@ -31,6 +33,8 @@ public class PointTable {
     private static final int Y_MAX = 6;
     private static final int Y_MIN = -6;
     private static final int RESOLUTION = 1;
+
+    private final TextArea dataInput = new TextArea();
 
     private final TableView<Point> table = new TableView<Point>();
     private final Spinner<Integer> numPointsSpinner = new Spinner<Integer>(1, 12, 12, 1);
@@ -84,6 +88,24 @@ public class PointTable {
                 graphModule.plotPoints();
                 xinput.setText("");
                 yinput.setText("");
+            }
+        );
+
+        // Set text area properties
+        dataInput.setPrefHeight(100);
+        dataInput.setPrefWidth(300);
+
+        final Button parseDataBtn = new Button("Parse");
+        parseDataBtn.setOnAction((ActionEvent e) -> {
+                // Clear points
+                data.clear();
+
+                // Parse data
+                data.addAll(PointParser.parsePointsFromString(dataInput.getText()));
+
+                // Plot data
+                graphModule.plotPoints();
+
             }
         );
 
@@ -174,7 +196,7 @@ public class PointTable {
         pointAddBar.setPadding(new Insets(10, 10, 10, 10));
 
         pointActBar.setSpacing(10);
-        pointActBar.getChildren().addAll();
+        pointActBar.getChildren().addAll(dataInput, parseDataBtn);
         pointActBar.setPadding(new Insets(10, 10, 10, 10));
 
         pointGenBar.setSpacing(10);
