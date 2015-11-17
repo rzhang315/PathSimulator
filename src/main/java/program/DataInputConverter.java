@@ -83,6 +83,7 @@ public class DataInputConverter {
         estPtsBtn.setOnAction((ActionEvent e) -> {
                 dataTheor.clear();
                 dataTheor.addAll(estimate(dataExper));
+                graphModule.plotPoints();
             }
         );
 

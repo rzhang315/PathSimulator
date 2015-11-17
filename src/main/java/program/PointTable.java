@@ -57,6 +57,8 @@ public class PointTable {
         this.data = data;
         this.graphModule = graphModule;
 
+        numPointsSpinner.setPrefWidth(150);
+
         // TODO Delete individual points
 
         final Button clearPoints = new Button("Clear");
@@ -66,13 +68,16 @@ public class PointTable {
             }
         );
 
+        // TODO: Bindings to enable or disable based on number of points
         // final Button deletePoint = new Button("Delete");
         // deletePoint.setOnAction((ActionEvent e) -> {
-        //
-        //         // Remove on element
+        //         if (data.size() != 0) {
+        //             data.remove(data.size() - 1);
+        //         }
         //     }
         // );
 
+        // TODO: bind the series graph to the table for automatic updates
         final Button addPoint = new Button("Add");
         addPoint.setOnAction((ActionEvent e) -> {
                 data.add(new Point(Integer.parseInt(xinput.getText()), Integer.parseInt(yinput.getText()), data.size() + 1));

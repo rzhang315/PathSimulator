@@ -194,7 +194,7 @@ public class PathGraph {
      * Update the points on the graph
      */
     public void plotPoints() {
-        clear();
+        clear("Points");
         XYChart.Series pointSeries = new XYChart.Series();
         for (Point p : data) {
             pointSeries.getData()
