@@ -11,17 +11,17 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 /**
- * Parse a path from a text file
+ * Parse a list of points from a file or String
  * @author Kairi Kozuma
- * @version 1.0
+ * @version 1.1
  */
 public class PointParser {
     /**
      * Parse a list of points from string
-     * @param  rawString String of point list to parse
+     * @param  rawString String to parse
      * @return           List<Point> parsed from String
      */
-    public static List<Point> parsePointsFromString(String rawString) {
+    public static List<Point> parseString(String rawString) {
         List<Point> pointList = new ArrayList<Point>();
         try {
             int i = 1;
@@ -32,7 +32,7 @@ public class PointParser {
                 } else if (pointData.length == 3) {
                     pointList.add(new Point(pointData[0], pointData[1], pointData[2]));
                 } else {
-                    // throw exception
+                    System.out.println("Invalid format");
                 }
                 i++;
             }
@@ -48,7 +48,7 @@ public class PointParser {
      * @param  fileName String file name
      * @return          Path object parsed from the file
      */
-    public static List<Point> parsePoingFromFile(String fileName) {
+    public static List<Point> parseFile(String fileName) {
         List<Point> pointList = new ArrayList<Point>();
         try {
             Scanner mFileScanner = new Scanner(new File(fileName));
@@ -71,7 +71,7 @@ public class PointParser {
      * @param  fileNameArray array of filenames
      * @return               Map of paths parsed from file
      */
-    public static Map<Path, String> parseMultiplePathFromFile(String[] fileNameArray) {
+    public static Map<Path, String> parseMultFile(String[] fileNameArray) {
 
         List<Point> pointList = new ArrayList<Point>();
         Map<Path, String> pathMap = new TreeMap<Path, String>();

@@ -101,7 +101,7 @@ public class PointTable {
                 data.clear();
 
                 // Parse data
-                data.addAll(PointParser.parsePointsFromString(dataInput.getText()));
+                data.addAll(PointParser.parseString(dataInput.getText()));
 
                 // Plot data
                 graphModule.plotPoints();

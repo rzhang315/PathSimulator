@@ -14,7 +14,7 @@ import java.io.FileNotFoundException;
  * @author Kairi Kozuma
  * @version 1.0
  */
-public class LocationDataParser {
+public class PointHexParser {
 
     // Conversion factor from robot units to feet
     private static final double CONVERSION_FACTOR = 1 / 290.29;
@@ -24,7 +24,7 @@ public class LocationDataParser {
      * @param  dataString String of data to parse
      * @return List<Point> list of points
      */
-    public static List<PointReal> parseDataFromString(String dataString, boolean getAllPoints) {
+    public static List<PointReal> parseString(String dataString, boolean getAllPoints) {
         List<PointReal> pointList = new ArrayList<PointReal>();
         try {
             for (String line : dataString.split("\\n")) {
@@ -45,7 +45,7 @@ public class LocationDataParser {
      * @param  fileName String file name
      * @return List<PointReal> list of points
      */
-    public static List<PointReal> parseDataFromFile(String fileName, boolean getAllPoints) {
+    public static List<PointReal> parseFile(String fileName, boolean getAllPoints) {
         List<PointReal> pointList = new ArrayList<PointReal>();
         try {
             Scanner mFileScanner = new Scanner(new File(fileName));

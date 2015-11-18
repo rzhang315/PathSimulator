@@ -10,11 +10,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 public class PointExporter {
-    // TODO: use interface that Point and PointReal extends
-
     public static void export(String fileName, List<PointReal> list) {
-
-        String timeStr = LocalDateTime.now().format( DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        String timeStr = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
         timeStr = timeStr.substring(0, timeStr.length() - 4);
         timeStr = timeStr.replace(":", "~");
         try {
@@ -27,18 +24,5 @@ public class PointExporter {
         } catch (FileNotFoundException e) {
             System.out.println(e);
         }
-
-
-
-        //         // for (Object o : list) {
-        //     if (o instanceof PointReal) {
-        //         PointReal p = (PointReal) o;
-        //         if (p.getIndex() != -1) {
-        //             fileStream.println(p);
-        //         }
-        //     } else {
-        //         fileStream.println(o);
-        //     }
-        // }
     }
 }

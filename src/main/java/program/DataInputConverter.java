@@ -3,7 +3,7 @@ package program;
 import model.Point;
 import model.PointReal;
 import util.PointExporter;
-import util.LocationDataParser;
+import util.PointHexParser;
 import java.util.List;
 import java.util.ArrayList;
 import javafx.event.ActionEvent;
@@ -62,10 +62,10 @@ public class DataInputConverter {
                 dataExperAll.clear();
 
                 // Parse data
-                dataExper.addAll(LocationDataParser
-                    .parseDataFromString(dataInput.getText(), false));
-                dataExperAll.addAll(LocationDataParser
-                    .parseDataFromString(dataInput.getText(), true));
+                dataExper.addAll(PointHexParser
+                    .parseString(dataInput.getText(), false));
+                dataExperAll.addAll(PointHexParser
+                    .parseString(dataInput.getText(), true));
 
                 // Plot data
                 graphModule.clearExperimental();

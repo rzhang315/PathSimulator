@@ -6,8 +6,8 @@ package util;
  * @version 1.0
  */
 public class Stopwatch {
-    long timeStart;
-    long timeEnd;
+    private long timeStart;
+    private long timeEnd;
 
     private Stopwatch(long timeStart) {
         this.timeStart = timeStart;
