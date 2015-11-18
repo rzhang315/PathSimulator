@@ -28,8 +28,7 @@ public class Path implements Comparable<Path> {
         for (int i = 0; i < pList.size() - 1; i++) {
             mSegments.add(new LineSegment(pList.get(i), pList.get(i + 1)));
         }
-        firstTurnAngle = (new LineSegment(new Point(0,0), new Point(1,0)))
-            .angle(mSegments.get(0));
+        firstTurnAngle = (LineSegment.X_UNIT).angle(mSegments.get(0));
     }
 
     /**
@@ -38,7 +37,7 @@ public class Path implements Comparable<Path> {
      */
     public Path(List<LineSegment> lineSegList, boolean useSegments) {
         mSegments = lineSegList;
-        firstTurnAngle = 0; // TODO: Fix initial angle
+        firstTurnAngle = (LineSegment.X_UNIT).angle(mSegments.get(0));
     }
 
     /**

@@ -3,12 +3,17 @@ package model;
 /**
  * Class that represents a line segment
  * @author Kairi Kozuma
- * @version 1.0
+ * @version 1.1
  */
 public class LineSegment {
+
+    // Constants
+    public static final LineSegment X_UNIT = new LineSegment(new Point(0, 0), new Point(1,0));
+    public static final LineSegment Y_UNIT = new LineSegment(new Point(0, 0), new Point(0,1));
+
     // Points in line segment
-    Point p1;
-    Point p2;
+    private Point p1;
+    private Point p2;
 
     // Constructor
     public LineSegment(Point start, Point end) {
@@ -54,8 +59,8 @@ public class LineSegment {
      */
     public double length() {
         return Math.sqrt(
-            Math.pow(p2.getX() - p1.getX(), 2.0)
-          + Math.pow(p2.getY() - p1.getY(), 2.0));
+            Math.pow(getDX(), 2.0)
+          + Math.pow(getDY(), 2.0));
     }
 
     /**
