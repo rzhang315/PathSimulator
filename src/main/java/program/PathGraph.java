@@ -225,13 +225,16 @@ public class PathGraph {
      */
     private void plotPath(List<Point> mBestPointList) {
         data.clear();
-        data.addAll(mBestPointList);
-
+        
         XYChart.Series pointSeries = new XYChart.Series();
         for (Point p : mBestPointList) {
             pointSeries.getData()
                 .add(new XYChart.Data(p.getX(), p.getY()));
         }
+
+        mBestPointList.remove(0);
+        
+        data.addAll(mBestPointList);
 
         // Connect points in order that they were added
         pointSeries.setName("BestPath");
@@ -247,7 +250,7 @@ public class PathGraph {
         Stopwatch stopwatch = Stopwatch.createStarted();
         Path bestPath = mAlgorithm.bestPath();
         stopwatch.stop();
-        totalTime.setText(String.format("%6.3fs", stopwatch.elapsedSeconds()));
+        totalTime.setText(String.format("%6.9fs", stopwatch.elapsedSeconds()));
         totalPathChecked.setText(
             NumberFormat.getInstance().format(mAlgorithm.getNumPath()));
 
