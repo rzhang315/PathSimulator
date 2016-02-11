@@ -92,7 +92,7 @@ public class PointTable {
         );
 
         // Set text area properties
-        dataInput.setPrefHeight(100);
+        dataInput.setPrefHeight(400);
         dataInput.setPrefWidth(300);
 
         final Button parseDataBtn = new Button("Parse");
